@@ -13,10 +13,10 @@
 - [x] Task: Conductor - User Manual Verification 'Monorepo & Backend Scaffolding' (Protocol in workflow.md) a79b1c3
 
 ## Phase 2: Core Catalog Schema & API
-- [ ] Task: Implement Category Module
-    - [ ] Write tests for Category CRUD
-    - [ ] Implement Category entity, DTOs, and Service
-    - [ ] Create secured Admin Controller for Categories
+- [x] Task: Implement Category Module 03ed528
+    - [x] Write tests for Category CRUD
+    - [x] Implement Category entity, DTOs, and Service
+    - [x] Create secured Admin Controller for Categories
 - [ ] Task: Implement Product Module
     - [ ] Write tests for Product CRUD
     - [ ] Implement Product entity, DTOs, and Service
