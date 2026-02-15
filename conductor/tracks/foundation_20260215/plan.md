@@ -17,10 +17,10 @@
     - [x] Write tests for Category CRUD
     - [x] Implement Category entity, DTOs, and Service
     - [x] Create secured Admin Controller for Categories
-- [ ] Task: Implement Product Module
-    - [ ] Write tests for Product CRUD
-    - [ ] Implement Product entity, DTOs, and Service
-    - [ ] Create secured Admin Controller for Products
+- [x] Task: Implement Product Module a7dfc41
+    - [x] Write tests for Product CRUD
+    - [x] Implement Product entity, DTOs, and Service
+    - [x] Create secured Admin Controller for Products
 - [ ] Task: Swagger/OpenAPI Documentation
     - [ ] Configure Swagger in NestJS
     - [ ] Annotate Catalog endpoints for API discovery
