@@ -10,7 +10,7 @@
 - [x] Task: Configure Supabase Integration e325526
     - [x] Initialize Supabase client in `apps/api`
     - [x] Implement `SupabaseAuthGuard` for JWT validation
-- [ ] Task: Conductor - User Manual Verification 'Monorepo & Backend Scaffolding' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Monorepo & Backend Scaffolding' (Protocol in workflow.md)
 
 ## Phase 2: Core Catalog Schema & API
 - [ ] Task: Implement Category Module

@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Phase 1: Project Foundation & Core Catalog API**
+- [~] **Track: Phase 1: Project Foundation & Core Catalog API**
   *Link: [./conductor/tracks/foundation_20260215/](./conductor/tracks/foundation_20260215/)*
