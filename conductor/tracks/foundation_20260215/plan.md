@@ -7,9 +7,9 @@
 - [x] Task: Scaffold NestJS API application 5fb7415
     - [x] Create `apps/api` using Nest CLI
     - [x] Configure TypeScript, ESLint, and Prettier per style guides
-- [ ] Task: Configure Supabase Integration
-    - [ ] Initialize Supabase client in `apps/api`
-    - [ ] Implement `SupabaseAuthGuard` for JWT validation
+- [x] Task: Configure Supabase Integration e325526
+    - [x] Initialize Supabase client in `apps/api`
+    - [x] Implement `SupabaseAuthGuard` for JWT validation
 - [ ] Task: Conductor - User Manual Verification 'Monorepo & Backend Scaffolding' (Protocol in workflow.md)
 
 ## Phase 2: Core Catalog Schema & API
