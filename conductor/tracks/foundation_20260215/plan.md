@@ -21,9 +21,9 @@
     - [x] Write tests for Product CRUD
     - [x] Implement Product entity, DTOs, and Service
     - [x] Create secured Admin Controller for Products
-- [ ] Task: Swagger/OpenAPI Documentation
-    - [ ] Configure Swagger in NestJS
-    - [ ] Annotate Catalog endpoints for API discovery
+- [x] Task: Swagger/OpenAPI Documentation ff0110a
+    - [x] Configure Swagger in NestJS
+    - [x] Annotate Catalog endpoints for API discovery
 - [ ] Task: Conductor - User Manual Verification 'Core Catalog Schema & API' (Protocol in workflow.md)
 
 [checkpoint: ]
