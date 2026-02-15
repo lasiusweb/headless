@@ -1,0 +1,29 @@
+# Implementation Plan - Phase 1: Project Foundation & Core Catalog API
+
+## Phase 1: Monorepo & Backend Scaffolding
+- [ ] Task: Initialize pnpm monorepo and Turborepo
+    - [ ] Create `pnpm-workspace.yaml` and `turbo.json`
+    - [ ] Initialize `apps/` and `packages/` directories
+- [ ] Task: Scaffold NestJS API application
+    - [ ] Create `apps/api` using Nest CLI
+    - [ ] Configure TypeScript, ESLint, and Prettier per style guides
+- [ ] Task: Configure Supabase Integration
+    - [ ] Initialize Supabase client in `apps/api`
+    - [ ] Implement `SupabaseAuthGuard` for JWT validation
+- [ ] Task: Conductor - User Manual Verification 'Monorepo & Backend Scaffolding' (Protocol in workflow.md)
+
+## Phase 2: Core Catalog Schema & API
+- [ ] Task: Implement Category Module
+    - [ ] Write tests for Category CRUD
+    - [ ] Implement Category entity, DTOs, and Service
+    - [ ] Create secured Admin Controller for Categories
+- [ ] Task: Implement Product Module
+    - [ ] Write tests for Product CRUD
+    - [ ] Implement Product entity, DTOs, and Service
+    - [ ] Create secured Admin Controller for Products
+- [ ] Task: Swagger/OpenAPI Documentation
+    - [ ] Configure Swagger in NestJS
+    - [ ] Annotate Catalog endpoints for API discovery
+- [ ] Task: Conductor - User Manual Verification 'Core Catalog Schema & API' (Protocol in workflow.md)
+
+[checkpoint: ]
