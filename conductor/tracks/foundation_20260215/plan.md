@@ -4,9 +4,9 @@
 - [x] Task: Initialize pnpm monorepo and Turborepo 04915d7
     - [x] Create `pnpm-workspace.yaml` and `turbo.json`
     - [x] Initialize `apps/` and `packages/` directories
-- [ ] Task: Scaffold NestJS API application
-    - [ ] Create `apps/api` using Nest CLI
-    - [ ] Configure TypeScript, ESLint, and Prettier per style guides
+- [x] Task: Scaffold NestJS API application 5fb7415
+    - [x] Create `apps/api` using Nest CLI
+    - [x] Configure TypeScript, ESLint, and Prettier per style guides
 - [ ] Task: Configure Supabase Integration
     - [ ] Initialize Supabase client in `apps/api`
     - [ ] Implement `SupabaseAuthGuard` for JWT validation
