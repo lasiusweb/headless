@@ -1,0 +1,13 @@
+{
+  "name": "headless",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}
