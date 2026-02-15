@@ -1,9 +1,9 @@
 # Implementation Plan - Phase 1: Project Foundation & Core Catalog API
 
 ## Phase 1: Monorepo & Backend Scaffolding
-- [ ] Task: Initialize pnpm monorepo and Turborepo
-    - [ ] Create `pnpm-workspace.yaml` and `turbo.json`
-    - [ ] Initialize `apps/` and `packages/` directories
+- [x] Task: Initialize pnpm monorepo and Turborepo 04915d7
+    - [x] Create `pnpm-workspace.yaml` and `turbo.json`
+    - [x] Initialize `apps/` and `packages/` directories
 - [ ] Task: Scaffold NestJS API application
     - [ ] Create `apps/api` using Nest CLI
     - [ ] Configure TypeScript, ESLint, and Prettier per style guides
