@@ -45,3 +45,19 @@
     - [x] Integrate with orders module for automatic reservation on approval
 
 [checkpoint: 9d875b8]
+
+## Phase 4: Payments & Invoicing [checkpoint: e1fefc6]
+- [x] Task: Enhance Payment Gateway Module
+    - [x] Add comprehensive payment service tests
+    - [x] Test payment initiation, verification, refund flows
+    - [x] Test partial payment processing
+- [x] Task: Enhance GST-Compliant Invoice Generation
+    - [x] Add HSN-based GST rate calculation (5%, 12%, 18% slabs)
+    - [x] Add item-level tax breakdown in invoices
+    - [x] Add proper CGST/SGST (intra-state) and IGST (inter-state) calculation
+- [x] Task: Add GST Compliance Reporting
+    - [x] Implement GSTR-1 ready reports (rate-wise summary)
+    - [x] Implement HSN-wise summary for GST filing
+    - [x] Add outward supply report generation
+
+[checkpoint: e1fefc6]
