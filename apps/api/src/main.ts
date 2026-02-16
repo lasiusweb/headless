@@ -1,19 +1,61 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { LoggingService } from './modules/logging/logging.service';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('KN Biosciences API')
-    .setDescription('Headless E-Commerce Platform API')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Get the logging service instance to use in global setup
+  const loggingService = app.get(LoggingService);
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    })
+  );
+
+  // Global exception filter
+  app.useGlobalFilters(new AllExceptionsFilter(loggingService));
+
+  // Enable CORS
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN?.split(',') || '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  // Enable shutdown hooks
+  app.enableShutdownHooks();
+
+  // Setup Swagger documentation
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('KN Biosciences API')
+      .setDescription('Headless E-Commerce Platform API for KN Biosciences')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+  }
+
+  // Log application startup
+  await loggingService.info(
+    'KN Biosciences API started successfully',
+    {
+      module: 'AppBootstrap',
+      port: process.env.PORT || 3000,
+      environment: process.env.NODE_ENV || 'development',
+    }
+  );
+
+  await app.listen(process.env.PORT || 3000);
 }
-void bootstrap();
+bootstrap();

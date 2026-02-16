@@ -24,6 +24,24 @@
 - [x] Task: Swagger/OpenAPI Documentation ff0110a
     - [x] Configure Swagger in NestJS
     - [x] Annotate Catalog endpoints for API discovery
-- [ ] Task: Conductor - User Manual Verification 'Core Catalog Schema & API' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Core Catalog Schema & API' (Protocol in workflow.md)
 
-[checkpoint: ]
+[checkpoint: pending_build_verification]
+
+## Phase 3: Cart & Orders Enhancement [checkpoint: pending]
+- [x] Task: Fix duplicate PosModule import in app.module.ts
+- [x] Task: Enhance Cart Module with GST calculation
+    - [x] Add role-based pricing (retailer/dealer/distributor)
+    - [x] Implement CGST+SGST (intra-state) and IGST (inter-state) calculation
+    - [x] Add comprehensive unit tests for cart service
+- [x] Task: Add Orders Module Tests
+    - [x] Create comprehensive tests for orders.service.ts
+    - [x] Test B2B approval workflow (auto-approve retailers, pending for dealers)
+    - [x] Test order rejection and shipping flows
+- [x] Task: Implement Inventory Stock Reservation
+    - [x] Add StockReservation interface and DTO
+    - [x] Implement createStockReservation method
+    - [x] Implement fulfill/cancel/expire stock reservation methods
+    - [x] Integrate with orders module for automatic reservation on approval
+
+[checkpoint: pending_build_verification]

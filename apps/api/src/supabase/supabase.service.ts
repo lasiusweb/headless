@@ -8,17 +8,28 @@ export class SupabaseService {
 
   constructor(private configService: ConfigService) {
     const url = this.configService.get<string>('SUPABASE_URL');
+    const key = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (!url || !key) {
+      throw new Error('Missing Supabase configuration');
+    }
+
+    this.client = createClient(url, key);
+  }
+
+  getClient(): SupabaseClient {
+    return this.client;
+  }
+
+  // Helper method to get public client (with anon key) for frontend-like operations
+  getPublicClient(): SupabaseClient {
+    const url = this.configService.get<string>('SUPABASE_URL');
     const key = this.configService.get<string>('SUPABASE_ANON_KEY');
     
     if (!url || !key) {
-      // In a real app, you might want to throw an error or handle this more gracefully
-      // For now, we'll just log or use empty strings to avoid crash during dev if env not set
+      throw new Error('Missing Supabase public configuration');
     }
     
-    this.client = createClient(url || '', key || '');
-  }
-
-  getClient() {
-    return this.client;
+    return createClient(url, key);
   }
 }
