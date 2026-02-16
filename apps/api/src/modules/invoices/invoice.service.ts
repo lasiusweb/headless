@@ -2,11 +2,35 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { SupabaseService } from '../../supabase/supabase.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class InvoiceService {
+  // GST rates by HSN code category (as per Indian tax law)
+  private readonly gstRatesByHsn: Record<string, number> = {
+    '3008': 12, // Ayurvedic medicines
+    '3101': 5,  // Organic fertilizers
+    '3104': 18, // Potassic fertilizers
+    '3105': 18, // Mineral/chemical fertilizers
+    '3808': 18, // Pesticides/insecticides
+    '2307': 18, // Wine lees, argal
+    '0511': 18, // Animal products
+    '1211': 12, // Medicinal plants
+    '1302': 18, // Vegetable extracts
+    '2106': 18, // Food preparations
+    '3507': 18, // Enzymes
+    '3824': 18, // Chemical products
+  };
+
   constructor(private supabaseService: SupabaseService) {}
+
+  /**
+   * Get GST rate for a product based on HSN code
+   */
+  private getGstRateForHsn(hsnCode: string): number {
+    // Extract first 4 digits of HSN code
+    const hsnPrefix = hsnCode?.substring(0, 4) || '3824';
+    return this.gstRatesByHsn[hsnPrefix] || 18; // Default 18%
+  }
 
   async findAll() {
     const { data, error } = await this.supabaseService.getClient()
@@ -89,31 +113,48 @@ export class InvoiceService {
     // Calculate GST amounts based on Indian tax rules
     // Determine if this is an inter-state or intra-state transaction
     const isInterState = order.shipping_address?.state !== order.billing_address?.state;
-    
+
     // Calculate tax amounts for each item based on HSN codes and applicable GST rates
     let totalTaxableAmount = 0;
     let totalCgstAmount = 0;
     let totalSgstAmount = 0;
     let totalIgstAmount = 0;
-    
+    const itemTaxDetails = [];
+
     for (const item of order.items) {
-      // In a real implementation, GST rates would be determined by HSN codes
-      // For this example, we'll use a standard 18% rate
-      const gstRate = 0.18; // 18% GST
+      // Get GST rate based on HSN code
+      const hsnCode = item.variant.product.hsn_code || '3824';
+      const gstRate = this.getGstRateForHsn(hsnCode) / 100;
       const taxableAmount = item.unit_price * item.quantity;
       totalTaxableAmount += taxableAmount;
-      
+
+      const itemTax = {
+        productId: item.variant.product.id,
+        productName: item.variant.product.name,
+        hsnCode,
+        gstRate: gstRate * 100,
+        taxableAmount,
+        cgstAmount: 0,
+        sgstAmount: 0,
+        igstAmount: 0,
+      };
+
       if (isInterState) {
         // For inter-state transactions, IGST is charged
         const igstAmount = taxableAmount * gstRate;
         totalIgstAmount += igstAmount;
+        itemTax.igstAmount = igstAmount;
       } else {
         // For intra-state transactions, CGST and SGST are charged
         const cgstAmount = taxableAmount * (gstRate / 2); // 9% CGST
         const sgstAmount = taxableAmount * (gstRate / 2); // 9% SGST
         totalCgstAmount += cgstAmount;
         totalSgstAmount += sgstAmount;
+        itemTax.cgstAmount = cgstAmount;
+        itemTax.sgstAmount = sgstAmount;
       }
+
+      itemTaxDetails.push(itemTax);
     }
 
     const totalGstAmount = totalCgstAmount + totalSgstAmount + totalIgstAmount;
@@ -152,8 +193,13 @@ export class InvoiceService {
       throw new Error(invoiceError.message);
     }
 
-    // Create invoice items records
-    for (const item of order.items) {
+    // Create invoice items records with proper GST rates
+    for (let i = 0; i < order.items.length; i++) {
+      const item = order.items[i];
+      const itemTax = itemTaxDetails[i];
+      const hsnCode = item.variant.product.hsn_code || '3824';
+      const gstRate = this.getGstRateForHsn(hsnCode);
+
       await this.supabaseService.getClient()
         .from('invoice_items')
         .insert([
@@ -163,14 +209,15 @@ export class InvoiceService {
             quantity: item.quantity,
             unit_price: item.unit_price,
             total_price: item.total_price,
-            hsn_code: item.variant.product.hsn_code,
-            gst_rate: 18, // Using 18% as example
-            cgst_rate: isInterState ? 0 : 9, // 9% if intra-state
-            sgst_rate: isInterState ? 0 : 9, // 9% if intra-state
-            igst_rate: isInterState ? 18 : 0, // 18% if inter-state
-            cgst_amount: isInterState ? 0 : (item.total_price * 0.09), // 9% CGST
-            sgst_amount: isInterState ? 0 : (item.total_price * 0.09), // 9% SGST
-            igst_amount: isInterState ? (item.total_price * 0.18) : 0, // 18% IGST
+            hsn_code: hsnCode,
+            gst_rate: gstRate,
+            cgst_rate: isInterState ? 0 : gstRate / 2,
+            sgst_rate: isInterState ? 0 : gstRate / 2,
+            igst_rate: isInterState ? gstRate : 0,
+            cgst_amount: parseFloat((isInterState ? 0 : itemTax.cgstAmount).toFixed(2)),
+            sgst_amount: parseFloat((isInterState ? 0 : itemTax.sgstAmount).toFixed(2)),
+            igst_amount: parseFloat((isInterState ? itemTax.igstAmount : 0).toFixed(2)),
+            taxable_amount: parseFloat(itemTax.taxableAmount.toFixed(2)),
           }
         ]);
     }
@@ -178,14 +225,18 @@ export class InvoiceService {
     // Update order to link to invoice and change status
     await this.supabaseService.getClient()
       .from('orders')
-      .update({ 
+      .update({
         status: 'invoiced',
         invoice_id: invoice.id
       })
       .eq('id', orderId);
 
-    // Return the complete invoice with details
-    return this.findOne(invoice.id);
+    // Return the complete invoice with details including tax breakdown
+    const completeInvoice = await this.findOne(invoice.id);
+    return {
+      ...completeInvoice,
+      taxBreakdown: itemTaxDetails,
+    };
   }
 
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto) {
@@ -371,6 +422,113 @@ export class InvoiceService {
     }
 
     return data;
+  }
+
+  /**
+   * Generate GST compliance report for a given period
+   * This report is used for GST filing (GSTR-1, GSTR-3B)
+   */
+  async generateGstReport(startDate: string, endDate: string, reportType: 'outward' | 'inward' = 'outward') {
+    const invoices = await this.getInvoicesByDateRange(startDate, endDate);
+
+    // Group by GST rate and calculate totals
+    const gstRateSummary = {};
+    const hsnWiseSummary = {};
+
+    for (const invoice of invoices) {
+      // Skip non-GST invoices (e.g., exports, SEZ)
+      if (invoice.is_export || invoice.is_sez) continue;
+
+      // Aggregate by GST rate
+      const cgstKey = `CGST_${invoice.cgst_rate || 0}`;
+      const sgstKey = `SGST_${invoice.sgst_rate || 0}`;
+      const igstKey = `IGST_${invoice.igst_rate || 0}`;
+
+      if (!gstRateSummary[cgstKey]) {
+        gstRateSummary[cgstKey] = { taxableAmount: 0, taxAmount: 0, invoiceCount: 0 };
+      }
+      if (!gstRateSummary[sgstKey]) {
+        gstRateSummary[sgstKey] = { taxableAmount: 0, taxAmount: 0, invoiceCount: 0 };
+      }
+      if (!gstRateSummary[igstKey]) {
+        gstRateSummary[igstKey] = { taxableAmount: 0, taxAmount: 0, invoiceCount: 0 };
+      }
+
+      gstRateSummary[cgstKey].taxableAmount += invoice.total_taxable_amount || 0;
+      gstRateSummary[cgstKey].taxAmount += invoice.cgst_amount || 0;
+      gstRateSummary[cgstKey].invoiceCount += 1;
+
+      gstRateSummary[sgstKey].taxableAmount += invoice.total_taxable_amount || 0;
+      gstRateSummary[sgstKey].taxAmount += invoice.sgst_amount || 0;
+      gstRateSummary[sgstKey].invoiceCount += 1;
+
+      gstRateSummary[igstKey].taxableAmount += invoice.total_taxable_amount || 0;
+      gstRateSummary[igstKey].taxAmount += invoice.igst_amount || 0;
+      gstRateSummary[igstKey].invoiceCount += 1;
+
+      // Aggregate by HSN code (for HSN-wise summary in GSTR-1)
+      const items = invoice.items || [];
+      for (const item of items) {
+        const hsnCode = item.hsn_code || 'UNKNOWN';
+        if (!hsnWiseSummary[hsnCode]) {
+          hsnWiseSummary[hsnCode] = {
+            hsnCode,
+            description: '',
+            totalQuantity: 0,
+            totalValue: 0,
+            taxRate: item.gst_rate || 18,
+            cgstAmount: 0,
+            sgstAmount: 0,
+            igstAmount: 0,
+          };
+        }
+        hsnWiseSummary[hsnCode].totalQuantity += item.quantity || 0;
+        hsnWiseSummary[hsnCode].totalValue += item.total_price || 0;
+        hsnWiseSummary[hsnCode].cgstAmount += item.cgst_amount || 0;
+        hsnWiseSummary[hsnCode].sgstAmount += item.sgst_amount || 0;
+        hsnWiseSummary[hsnCode].igstAmount += item.igst_amount || 0;
+      }
+    }
+
+    // Calculate totals
+    const totalTaxableAmount = Object.values(gstRateSummary).reduce((sum, item: any) => sum + item.taxableAmount, 0);
+    const totalCgst = Object.entries(gstRateSummary)
+      .filter(([key]) => key.startsWith('CGST'))
+      .reduce((sum, item: any) => sum + item.taxAmount, 0);
+    const totalSgst = Object.entries(gstRateSummary)
+      .filter(([key]) => key.startsWith('SGST'))
+      .reduce((sum, item: any) => sum + item.taxAmount, 0);
+    const totalIgst = Object.entries(gstRateSummary)
+      .filter(([key]) => key.startsWith('IGST'))
+      .reduce((sum, item: any) => sum + item.taxAmount, 0);
+
+    return {
+      reportType,
+      period: { startDate, endDate },
+      summary: {
+        totalInvoices: invoices.length,
+        totalTaxableAmount: parseFloat(totalTaxableAmount.toFixed(2)),
+        totalCgst: parseFloat(totalCgst.toFixed(2)),
+        totalSgst: parseFloat(totalSgst.toFixed(2)),
+        totalIgst: parseFloat(totalIgst.toFixed(2)),
+        totalGst: parseFloat((totalCgst + totalSgst + totalIgst).toFixed(2)),
+      },
+      rateWiseSummary: Object.entries(gstRateSummary).map(([rate, data]: [string, any]) => ({
+        rate: rate.split('_')[1],
+        ...data,
+        taxableAmount: parseFloat(data.taxableAmount.toFixed(2)),
+        taxAmount: parseFloat(data.taxAmount.toFixed(2)),
+      })),
+      hsnWiseSummary: Object.values(hsnWiseSummary).map((item: any) => ({
+        ...item,
+        totalQuantity: parseFloat(item.totalQuantity.toFixed(2)),
+        totalValue: parseFloat(item.totalValue.toFixed(2)),
+        cgstAmount: parseFloat(item.cgstAmount.toFixed(2)),
+        sgstAmount: parseFloat(item.sgstAmount.toFixed(2)),
+        igstAmount: parseFloat(item.igstAmount.toFixed(2)),
+      })),
+      generatedAt: new Date().toISOString(),
+    };
   }
 
   private generateInvoiceNumber(): string {

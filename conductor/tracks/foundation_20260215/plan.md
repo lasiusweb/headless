@@ -28,7 +28,7 @@
 
 [checkpoint: pending_build_verification]
 
-## Phase 3: Cart & Orders Enhancement [checkpoint: pending]
+## Phase 3: Cart & Orders Enhancement [checkpoint: 9d875b8]
 - [x] Task: Fix duplicate PosModule import in app.module.ts
 - [x] Task: Enhance Cart Module with GST calculation
     - [x] Add role-based pricing (retailer/dealer/distributor)
@@ -44,4 +44,4 @@
     - [x] Implement fulfill/cancel/expire stock reservation methods
     - [x] Integrate with orders module for automatic reservation on approval
 
-[checkpoint: pending_build_verification]
+[checkpoint: 9d875b8]
