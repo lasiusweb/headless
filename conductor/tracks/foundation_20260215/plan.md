@@ -103,3 +103,18 @@
     - [x] Add date range filtering
 
 [checkpoint: 97cebd3]
+
+## Phase 8: B2C Storefront & Shipping [checkpoint: fcc0f70]
+- [x] Task: Enhance B2C Agriculture Storefront
+    - [x] Create shop page with crop-based filtering
+    - [x] Add problem/solution finder filter
+    - [x] Add category quick selection cards
+    - [x] Implement multi-filter search
+- [x] Task: Implement Shipping Integration
+    - [x] Add ShippingService with Delhivery and VRL
+    - [x] Implement rate comparison across carriers
+    - [x] Add shipment creation with AWB generation
+    - [x] Add real-time shipment tracking
+    - [x] Add shipment cancellation support
+
+[checkpoint: fcc0f70]
