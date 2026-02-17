@@ -1,84 +1,80 @@
-import { Controller, Get, Post, Put, Body, Param, Query } from '@nestjs/common';
-import { ShippingService } from './shipping.service';
-import { 
-  CreateShippingOrderDto, 
-  UpdateShippingOrderDto, 
-  ShippingRateDto, 
-  TrackShipmentDto 
-} from './dto/shipping.dto';
-import { ShippingOrder, ShippingRate, ShipmentTrackingEvent } from './interfaces/shipping.interface';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ShippingService, ShippingRate, Shipment, TrackingEvent } from './shipping.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+class GetRatesDto {
+  originPincode: string;
+  destinationPincode: string;
+  weight: number;
+  length?: number;
+  width?: number;
+  height?: number;
+}
+
+class CreateShipmentDto {
+  orderId: string;
+  carrier: string;
+  service: string;
+  pickupAddress: any;
+  deliveryAddress: any;
+  items: any[];
+  weight: number;
+}
+
+@ApiTags('Shipping')
 @Controller('shipping')
+@UseGuards(JwtAuthGuard)
 export class ShippingController {
   constructor(private readonly shippingService: ShippingService) {}
 
-  @Post('order')
-  createShippingOrder(@Body() createShippingOrderDto: CreateShippingOrderDto): Promise<ShippingOrder> {
-    return this.shippingService.createShippingOrder(createShippingOrderDto);
+  @Get('rates')
+  @ApiOperation({ summary: 'Get shipping rates from multiple carriers' })
+  @ApiResponse({ status: 200, description: 'List of shipping rates' })
+  async getRates(@Query() query: GetRatesDto): Promise<ShippingRate[]> {
+    return this.shippingService.getShippingRates(query);
   }
 
-  @Put('order/:id')
-  updateShippingOrder(
-    @Param('id') id: string,
-    @Body() updateShippingOrderDto: UpdateShippingOrderDto
-  ): Promise<ShippingOrder> {
-    return this.shippingService.updateShippingOrder(id, updateShippingOrderDto);
+  @Post('create')
+  @ApiOperation({ summary: 'Create shipment with carrier' })
+  @ApiResponse({ status: 201, description: 'Shipment created successfully' })
+  async createShipment(@Body() body: CreateShipmentDto): Promise<Shipment> {
+    return this.shippingService.createShipment(body);
   }
 
-  @Get('order/:id')
-  getShippingOrderById(@Param('id') id: string): Promise<ShippingOrder> {
-    return this.shippingService.getShippingOrderById(id);
+  @Get('track/:awbNumber')
+  @ApiOperation({ summary: 'Track shipment by AWB number' })
+  @ApiResponse({ status: 200, description: 'Tracking events' })
+  async trackShipment(
+    @Param('awbNumber') awbNumber: string,
+    @Query('carrier') carrier: string,
+  ): Promise<TrackingEvent[]> {
+    return this.shippingService.trackShipment(awbNumber, carrier);
   }
 
-  @Get('order/tracking/:trackingNumber')
-  getShippingOrderByTrackingNumber(@Param('trackingNumber') trackingNumber: string): Promise<ShippingOrder> {
-    return this.shippingService.getShippingOrderByTrackingNumber(trackingNumber);
+  @Post('cancel/:awbNumber')
+  @ApiOperation({ summary: 'Cancel shipment' })
+  @ApiResponse({ status: 200, description: 'Shipment cancelled' })
+  async cancelShipment(
+    @Param('awbNumber') awbNumber: string,
+    @Query('carrier') carrier: string,
+  ): Promise<{ success: boolean }> {
+    const result = await this.shippingService.cancelShipment(awbNumber, carrier);
+    return { success: result };
   }
 
-  @Get('order/order/:orderId')
-  getShippingOrdersByOrder(@Param('orderId') orderId: string): Promise<ShippingOrder[]> {
-    return this.shippingService.getShippingOrdersByOrder(orderId);
-  }
-
-  @Get('order/customer/:customerId')
-  getShippingOrdersByCustomer(@Param('customerId') customerId: string): Promise<ShippingOrder[]> {
-    return this.shippingService.getShippingOrdersByCustomer(customerId);
-  }
-
-  @Get('order/status/:status')
-  getShippingOrdersByStatus(@Param('status') status: string): Promise<ShippingOrder[]> {
-    return this.shippingService.getShippingOrdersByStatus(status);
-  }
-
-  @Post('track')
-  getTrackingHistory(@Body() trackShipmentDto: TrackShipmentDto): Promise<ShipmentTrackingEvent[]> {
-    return this.shippingService.getTrackingHistory(trackShipmentDto.trackingNumber);
-  }
-
-  @Post('rate')
-  createShippingRate(@Body() shippingRateDto: ShippingRateDto): Promise<ShippingRate> {
-    return this.shippingService.createShippingRate(shippingRateDto);
-  }
-
-  @Get('rate/:carrier/:serviceType/:originPincode/:destPincode/:weight')
-  getShippingRate(
-    @Param('carrier') carrier: string,
-    @Param('serviceType') serviceType: string,
-    @Param('originPincode') originPincode: string,
-    @Param('destPincode') destPincode: string,
-    @Param('weight') weight: number
-  ): Promise<ShippingRate | null> {
-    return this.shippingService.getShippingRate(carrier, serviceType, originPincode, destPincode, weight);
-  }
-
-  @Get('cost/:carrier/:serviceType/:originPincode/:destPincode/:weight')
-  calculateShippingCost(
-    @Param('carrier') carrier: string,
-    @Param('serviceType') serviceType: string,
-    @Param('originPincode') originPincode: string,
-    @Param('destPincode') destPincode: string,
-    @Param('weight') weight: number
-  ): Promise<number> {
-    return this.shippingService.calculateShippingCost(carrier, serviceType, originPincode, destPincode, weight);
+  @Get('order/:orderId')
+  @ApiOperation({ summary: 'Get shipments for an order' })
+  @ApiResponse({ status: 200, description: 'List of shipments' })
+  async getShipmentsByOrder(@Param('orderId') orderId: string): Promise<any[]> {
+    return this.shippingService.getShipmentsByOrderId(orderId);
   }
 }

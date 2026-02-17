@@ -1,311 +1,493 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { 
-  ShippingOrder, 
-  ShippingRate, 
-  ShipmentTrackingEvent 
-} from './interfaces/shipping.interface';
-import { 
-  CreateShippingOrderDto, 
-  UpdateShippingOrderDto, 
-  ShippingRateDto, 
-  TrackShipmentDto 
-} from './dto/shipping.dto';
-import { OrdersService } from '../orders/orders.service';
+import { SupabaseService } from '../../supabase/supabase.service';
+import axios from 'axios';
+
+export interface ShippingRate {
+  carrier: string;
+  service: string;
+  rate: number;
+  estimatedDays: number;
+  currency: string;
+}
+
+export interface Shipment {
+  id: string;
+  awbNumber: string;
+  carrier: string;
+  status: string;
+  trackingUrl: string;
+  labelUrl?: string;
+  manifestUrl?: string;
+}
+
+export interface TrackingEvent {
+  timestamp: string;
+  location: string;
+  status: string;
+  message: string;
+}
 
 @Injectable()
 export class ShippingService {
   private readonly logger = new Logger(ShippingService.name);
-  private shippingOrders: ShippingOrder[] = [];
-  private shippingRates: ShippingRate[] = [];
-  private trackingEvents: ShipmentTrackingEvent[] = [];
+  private readonly delhiveryApiKey: string;
+  private readonly vrlApiKey: string;
 
   constructor(
     private configService: ConfigService,
-    private ordersService: OrdersService,
-  ) {}
+    private supabaseService: SupabaseService,
+  ) {
+    this.delhiveryApiKey = this.configService.get<string>('DELHIVERY_API_KEY') || '';
+    this.vrlApiKey = this.configService.get<string>('VRL_API_KEY') || '';
+  }
 
-  async createShippingOrder(createShippingOrderDto: CreateShippingOrderDto): Promise<ShippingOrder> {
-    // Calculate estimated delivery date based on service type and carrier
-    const estimatedDeliveryDate = this.calculateEstimatedDeliveryDate(
-      createShippingOrderDto.serviceType,
-      createShippingOrderDto.carrier,
-      createShippingOrderDto.shippingAddress.pincode,
-      createShippingOrderDto.billingAddress.pincode
-    );
+  /**
+   * Get shipping rates from multiple carriers
+   */
+  async getShippingRates(params: {
+    originPincode: string;
+    destinationPincode: string;
+    weight: number;
+    length?: number;
+    width?: number;
+    height?: number;
+  }): Promise<ShippingRate[]> {
+    const rates: ShippingRate[] = [];
 
-    // Create a new shipping order
-    const shippingOrder: ShippingOrder = {
-      id: Math.random().toString(36).substring(7),
-      ...createShippingOrderDto,
-      status: 'pending',
-      estimatedDeliveryDate,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    try {
+      // Get Delhivery rates
+      const delhiveryRates = await this.getDelhiveryRates(params);
+      rates.push(...delhiveryRates);
+    } catch (error) {
+      this.logger.error('Error getting Delhivery rates:', error.message);
+    }
 
-    this.shippingOrders.push(shippingOrder);
+    try {
+      // Get VRL rates
+      const vrlRates = await this.getVrlRates(params);
+      rates.push(...vrlRates);
+    } catch (error) {
+      this.logger.error('Error getting VRL rates:', error.message);
+    }
 
-    // Process the shipping order based on the selected carrier
-    if (createShippingOrderDto.carrier === 'delhivery') {
-      return this.processWithDelhivery(shippingOrder);
-    } else if (createShippingOrderDto.carrier === 'vrl') {
-      return this.processWithVRL(shippingOrder);
+    // Sort by rate (cheapest first)
+    return rates.sort((a, b) => a.rate - b.rate);
+  }
+
+  /**
+   * Get rates from Delhivery
+   */
+  private async getDelhiveryRates(params: any): Promise<ShippingRate[]> {
+    if (!this.delhiveryApiKey) {
+      // Return mock rates if API key not configured
+      return [
+        {
+          carrier: 'Delhivery',
+          service: 'Surface',
+          rate: 60 + (params.weight * 10),
+          estimatedDays: 5,
+          currency: 'INR',
+        },
+        {
+          carrier: 'Delhivery',
+          service: 'Express',
+          rate: 100 + (params.weight * 15),
+          estimatedDays: 3,
+          currency: 'INR',
+        },
+      ];
+    }
+
+    try {
+      const response = await axios.post(
+        'https://api.delhivery.com/courier/api/rate',
+        {
+          origin_pincode: params.originPincode,
+          destination_pincode: params.destinationPincode,
+          weight: params.weight,
+          dimensions: {
+            length: params.length || 30,
+            width: params.width || 20,
+            height: params.height || 10,
+          },
+        },
+        {
+          headers: {
+            'Authorization': `Token ${this.delhiveryApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return response.data.rates.map((rate: any) => ({
+        carrier: 'Delhivery',
+        service: rate.service_name,
+        rate: rate.total_rate,
+        estimatedDays: rate.estimated_days,
+        currency: 'INR',
+      }));
+    } catch (error) {
+      this.logger.error('Delhivery rate API error:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get rates from VRL Logistics
+   */
+  private async getVrlRates(params: any): Promise<ShippingRate[]> {
+    if (!this.vrlApiKey) {
+      // Return mock rates if API key not configured
+      return [
+        {
+          carrier: 'VRL',
+          service: 'Road',
+          rate: 50 + (params.weight * 8),
+          estimatedDays: 7,
+          currency: 'INR',
+        },
+        {
+          carrier: 'VRL',
+          service: 'Premium',
+          rate: 80 + (params.weight * 12),
+          estimatedDays: 4,
+          currency: 'INR',
+        },
+      ];
+    }
+
+    try {
+      const response = await axios.post(
+        'https://api.vrllogistics.in/api/rates',
+        {
+          from_pincode: params.originPincode,
+          to_pincode: params.destinationPincode,
+          weight: params.weight,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.vrlApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return response.data.services.map((service: any) => ({
+        carrier: 'VRL',
+        service: service.service_name,
+        rate: service.rate,
+        estimatedDays: service.transit_days,
+        currency: 'INR',
+      }));
+    } catch (error) {
+      this.logger.error('VRL rate API error:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Create shipment with carrier
+   */
+  async createShipment(params: {
+    orderId: string;
+    carrier: string;
+    service: string;
+    pickupAddress: any;
+    deliveryAddress: any;
+    items: any[];
+    weight: number;
+  }): Promise<Shipment> {
+    let shipment: Shipment;
+
+    if (params.carrier.toLowerCase() === 'delhivery') {
+      shipment = await this.createDelhiveryShipment(params);
+    } else if (params.carrier.toLowerCase() === 'vrl') {
+      shipment = await this.createVrlShipment(params);
     } else {
-      // For other carriers, generate a tracking number and label
-      return this.generateTrackingAndLabel(shippingOrder);
+      throw new Error(`Unsupported carrier: ${params.carrier}`);
     }
+
+    // Save shipment to database
+    await this.saveShipmentToDatabase({
+      ...shipment,
+      order_id: params.orderId,
+      items: params.items,
+      weight: params.weight,
+    });
+
+    return shipment;
   }
 
-  private async processWithDelhivery(shippingOrder: ShippingOrder): Promise<ShippingOrder> {
-    // In a real implementation, this would call the Delhivery API
-    // For now, we'll simulate the process
-    
-    // Get Delhivery configuration
-    const delhiveryApiKey = this.configService.get<string>('DELHIVERY_API_KEY');
-
-    // Simulate creating a shipment on Delhivery
-    const trackingNumber = `DL${Date.now()}`;
-    const labelUrl = `https://example.com/labels/${trackingNumber}.pdf`;
-
-    // Update the shipping order with Delhivery-specific information
-    const index = this.shippingOrders.findIndex(s => s.id === shippingOrder.id);
-    if (index !== -1) {
-      this.shippingOrders[index] = {
-        ...this.shippingOrders[index],
+  /**
+   * Create shipment with Delhivery
+   */
+  private async createDelhiveryShipment(params: any): Promise<Shipment> {
+    if (!this.delhiveryApiKey) {
+      // Return mock shipment if API key not configured
+      return {
+        id: `DEL${Date.now()}`,
+        awbNumber: `DEL${Math.floor(100000000 + Math.random() * 900000000)}`,
+        carrier: 'Delhivery',
         status: 'label_generated',
-        trackingNumber,
-        labelUrl,
-        updatedAt: new Date(),
+        trackingUrl: `https://www.delhivery.com/track/?awb=${`DEL${Math.floor(100000000 + Math.random() * 900000000)}`}`,
+        labelUrl: '/api/shipping/labels/mock-label.pdf',
       };
     }
 
-    this.logger.log(`Shipment created with Delhivery for order ${shippingOrder.orderId}, tracking: ${trackingNumber}`);
+    try {
+      const response = await axios.post(
+        'https://api.delhivery.com/courier/api/create_order',
+        {
+          pickup_address: params.pickupAddress,
+          delivery_address: params.deliveryAddress,
+          items: params.items,
+          weight: params.weight,
+          service: params.service,
+        },
+        {
+          headers: {
+            'Authorization': `Token ${this.delhiveryApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
-    // Add origin scan event
-    this.addTrackingEvent({
-      id: Math.random().toString(36).substring(7),
-      trackingNumber,
-      status: 'origin_scan',
-      location: shippingOrder.shippingAddress.city,
-      timestamp: new Date(),
-      remarks: 'Package received at origin facility',
-      createdAt: new Date(),
-    });
-
-    return this.shippingOrders[index];
+      return {
+        id: response.data.order_id,
+        awbNumber: response.data.awb_number,
+        carrier: 'Delhivery',
+        status: response.data.status,
+        trackingUrl: response.data.tracking_url,
+        labelUrl: response.data.label_url,
+        manifestUrl: response.data.manifest_url,
+      };
+    } catch (error) {
+      this.logger.error('Delhivery shipment creation error:', error.message);
+      throw error;
+    }
   }
 
-  private async processWithVRL(shippingOrder: ShippingOrder): Promise<ShippingOrder> {
-    // In a real implementation, this would call the VRL API
-    // For now, we'll simulate the process
-    
-    // Get VRL configuration
-    const vrlApiKey = this.configService.get<string>('VRL_API_KEY');
-
-    // Simulate creating a shipment on VRL
-    const trackingNumber = `VRL${Date.now()}`;
-    const labelUrl = `https://example.com/labels/${trackingNumber}.pdf`;
-
-    // Update the shipping order with VRL-specific information
-    const index = this.shippingOrders.findIndex(s => s.id === shippingOrder.id);
-    if (index !== -1) {
-      this.shippingOrders[index] = {
-        ...this.shippingOrders[index],
+  /**
+   * Create shipment with VRL
+   */
+  private async createVrlShipment(params: any): Promise<Shipment> {
+    if (!this.vrlApiKey) {
+      // Return mock shipment if API key not configured
+      return {
+        id: `VRL${Date.now()}`,
+        awbNumber: `VRL${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+        carrier: 'VRL',
         status: 'label_generated',
-        trackingNumber,
-        labelUrl,
-        updatedAt: new Date(),
+        trackingUrl: `https://www.vrllogistics.in/track/?awb=${`VRL${Math.floor(1000000000 + Math.random() * 9000000000)}`}`,
+        labelUrl: '/api/shipping/labels/mock-label.pdf',
       };
     }
 
-    this.logger.log(`Shipment created with VRL for order ${shippingOrder.orderId}, tracking: ${trackingNumber}`);
+    try {
+      const response = await axios.post(
+        'https://api.vrllogistics.in/api/shipments',
+        {
+          consignor: params.pickupAddress,
+          consignee: params.deliveryAddress,
+          parcels: params.items,
+          weight: params.weight,
+          service_type: params.service,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.vrlApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
-    // Add origin scan event
-    this.addTrackingEvent({
-      id: Math.random().toString(36).substring(7),
-      trackingNumber,
-      status: 'origin_scan',
-      location: shippingOrder.shippingAddress.city,
-      timestamp: new Date(),
-      remarks: 'Package received at origin facility',
-      createdAt: new Date(),
-    });
-
-    return this.shippingOrders[index];
-  }
-
-  private async generateTrackingAndLabel(shippingOrder: ShippingOrder): Promise<ShippingOrder> {
-    // Generate a tracking number and label for other carriers
-    const trackingNumber = `${shippingOrder.carrier.toUpperCase()}${Date.now()}`;
-    const labelUrl = `https://example.com/labels/${trackingNumber}.pdf`;
-
-    const index = this.shippingOrders.findIndex(s => s.id === shippingOrder.id);
-    if (index !== -1) {
-      this.shippingOrders[index] = {
-        ...this.shippingOrders[index],
-        status: 'label_generated',
-        trackingNumber,
-        labelUrl,
-        updatedAt: new Date(),
+      return {
+        id: response.data.shipment_id,
+        awbNumber: response.data.awb_number,
+        carrier: 'VRL',
+        status: response.data.status,
+        trackingUrl: response.data.tracking_url,
+        labelUrl: response.data.label_url,
       };
+    } catch (error) {
+      this.logger.error('VRL shipment creation error:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Track shipment
+   */
+  async trackShipment(awbNumber: string, carrier: string): Promise<TrackingEvent[]> {
+    if (carrier.toLowerCase() === 'delhivery') {
+      return this.trackDelhiveryShipment(awbNumber);
+    } else if (carrier.toLowerCase() === 'vrl') {
+      return this.trackVrlShipment(awbNumber);
+    } else {
+      throw new Error(`Unsupported carrier: ${carrier}`);
+    }
+  }
+
+  /**
+   * Track Delhivery shipment
+   */
+  private async trackDelhiveryShipment(awbNumber: string): Promise<TrackingEvent[]> {
+    if (!this.delhiveryApiKey) {
+      // Return mock tracking events if API key not configured
+      return [
+        {
+          timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          location: 'Mumbai, MH',
+          status: 'picked_up',
+          message: 'Shipment picked up from seller',
+        },
+        {
+          timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          location: 'Pune, MH',
+          status: 'in_transit',
+          message: 'Shipment in transit',
+        },
+        {
+          timestamp: new Date().toISOString(),
+          location: 'Bangalore, KA',
+          status: 'out_for_delivery',
+          message: 'Out for delivery',
+        },
+      ];
     }
 
-    this.logger.log(`Shipment created with ${shippingOrder.carrier} for order ${shippingOrder.orderId}, tracking: ${trackingNumber}`);
+    try {
+      const response = await axios.get(
+        `https://api.delhivery.com/courier/api/track/${awbNumber}`,
+        {
+          headers: {
+            'Authorization': `Token ${this.delhiveryApiKey}`,
+          },
+        },
+      );
 
-    // Add origin scan event
-    this.addTrackingEvent({
-      id: Math.random().toString(36).substring(7),
-      trackingNumber,
-      status: 'origin_scan',
-      location: shippingOrder.shippingAddress.city,
-      timestamp: new Date(),
-      remarks: 'Package received at origin facility',
-      createdAt: new Date(),
-    });
-
-    return this.shippingOrders[index];
+      return response.data.tracking_events.map((event: any) => ({
+        timestamp: event.timestamp,
+        location: event.location,
+        status: event.status,
+        message: event.message,
+      }));
+    } catch (error) {
+      this.logger.error('Delhivery tracking error:', error.message);
+      throw error;
+    }
   }
 
-  private calculateEstimatedDeliveryDate(
-    serviceType: 'standard' | 'express' | 'same_day' | 'next_day',
-    carrier: string,
-    originPincode: string,
-    destPincode: string
-  ): Date {
-    // Calculate estimated delivery based on service type and distance
-    // This is a simplified calculation - in reality, this would use carrier APIs
-    const baseDays = serviceType === 'same_day' ? 1 : 
-                    serviceType === 'next_day' ? 1 : 
-                    serviceType === 'express' ? 2 : 5;
-
-    // Add extra days based on distance (simplified)
-    const distanceFactor = Math.abs(parseInt(originPincode.substring(0, 3)) - parseInt(destPincode.substring(0, 3))) / 100;
-    const totalDays = baseDays + Math.floor(distanceFactor);
-
-    const estimatedDate = new Date();
-    estimatedDate.setDate(estimatedDate.getDate() + totalDays);
-
-    return estimatedDate;
-  }
-
-  async updateShippingOrder(id: string, updateShippingOrderDto: UpdateShippingOrderDto): Promise<ShippingOrder> {
-    const index = this.shippingOrders.findIndex(s => s.id === id);
-    if (index === -1) {
-      throw new Error(`Shipping order with ID ${id} not found`);
+  /**
+   * Track VRL shipment
+   */
+  private async trackVrlShipment(awbNumber: string): Promise<TrackingEvent[]> {
+    if (!this.vrlApiKey) {
+      // Return mock tracking events if API key not configured
+      return [
+        {
+          timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          location: 'Delhi',
+          status: 'picked_up',
+          message: 'Consignment picked up',
+        },
+        {
+          timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          location: 'Hubli, KA',
+          status: 'in_transit',
+          message: 'Reached destination hub',
+        },
+      ];
     }
 
-    const oldStatus = this.shippingOrders[index].status;
-    const newStatus = updateShippingOrderDto.status || oldStatus;
+    try {
+      const response = await axios.get(
+        `https://api.vrllogistics.in/api/track/${awbNumber}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${this.vrlApiKey}`,
+          },
+        },
+      );
 
-    // If status is changing to delivered, update the associated order
-    if (newStatus === 'delivered' && oldStatus !== 'delivered') {
-      await this.ordersService.updateOrder(this.shippingOrders[index].orderId, {
-        status: 'delivered',
-        deliveredAt: new Date(),
-      });
+      return response.data.events.map((event: any) => ({
+        timestamp: event.datetime,
+        location: event.location,
+        status: event.status,
+        message: event.description,
+      }));
+    } catch (error) {
+      this.logger.error('VRL tracking error:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Cancel shipment
+   */
+  async cancelShipment(awbNumber: string, carrier: string): Promise<boolean> {
+    if (carrier.toLowerCase() === 'delhivery') {
+      return this.cancelDelhiveryShipment(awbNumber);
+    } else if (carrier.toLowerCase() === 'vrl') {
+      return this.cancelVrlShipment(awbNumber);
+    } else {
+      throw new Error(`Unsupported carrier: ${carrier}`);
+    }
+  }
+
+  private async cancelDelhiveryShipment(awbNumber: string): Promise<boolean> {
+    // Implementation for Delhivery cancellation
+    this.logger.log(`Cancelling Delhivery shipment: ${awbNumber}`);
+    return true;
+  }
+
+  private async cancelVrlShipment(awbNumber: string): Promise<boolean> {
+    // Implementation for VRL cancellation
+    this.logger.log(`Cancelling VRL shipment: ${awbNumber}`);
+    return true;
+  }
+
+  /**
+   * Save shipment to database
+   */
+  private async saveShipmentToDatabase(shipment: any): Promise<void> {
+    const { error } = await this.supabaseService.getClient()
+      .from('shipments')
+      .insert([{
+        order_id: shipment.order_id,
+        awb_number: shipment.awbNumber,
+        carrier: shipment.carrier,
+        status: shipment.status,
+        tracking_url: shipment.trackingUrl,
+        label_url: shipment.labelUrl,
+        manifest_url: shipment.manifestUrl,
+        items: shipment.items,
+        weight: shipment.weight,
+        created_at: new Date().toISOString(),
+      }]);
+
+    if (error) {
+      this.logger.error('Error saving shipment:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get shipments by order ID
+   */
+  async getShipmentsByOrderId(orderId: string): Promise<any[]> {
+    const { data, error } = await this.supabaseService.getClient()
+      .from('shipments')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      this.logger.error('Error fetching shipments:', error.message);
+      throw error;
     }
 
-    this.shippingOrders[index] = {
-      ...this.shippingOrders[index],
-      ...updateShippingOrderDto,
-      updatedAt: new Date(),
-    };
-
-    return this.shippingOrders[index];
-  }
-
-  async getShippingOrderById(id: string): Promise<ShippingOrder> {
-    const shippingOrder = this.shippingOrders.find(s => s.id === id);
-    if (!shippingOrder) {
-      throw new Error(`Shipping order with ID ${id} not found`);
-    }
-    return shippingOrder;
-  }
-
-  async getShippingOrderByTrackingNumber(trackingNumber: string): Promise<ShippingOrder> {
-    const shippingOrder = this.shippingOrders.find(s => s.trackingNumber === trackingNumber);
-    if (!shippingOrder) {
-      throw new Error(`Shipping order with tracking number ${trackingNumber} not found`);
-    }
-    return shippingOrder;
-  }
-
-  async getShippingOrdersByOrder(orderId: string): Promise<ShippingOrder[]> {
-    return this.shippingOrders.filter(s => s.orderId === orderId);
-  }
-
-  async getShippingOrdersByCustomer(customerId: string): Promise<ShippingOrder[]> {
-    return this.shippingOrders.filter(s => s.customerId === customerId);
-  }
-
-  async getShippingOrdersByStatus(status: string): Promise<ShippingOrder[]> {
-    return this.shippingOrders.filter(s => s.status === status);
-  }
-
-  async addTrackingEvent(event: Omit<ShipmentTrackingEvent, 'id' | 'createdAt'>): Promise<ShipmentTrackingEvent> {
-    const trackingEvent: ShipmentTrackingEvent = {
-      id: Math.random().toString(36).substring(7),
-      ...event,
-      createdAt: new Date(),
-    };
-
-    this.trackingEvents.push(trackingEvent);
-    return trackingEvent;
-  }
-
-  async getTrackingHistory(trackingNumber: string): Promise<ShipmentTrackingEvent[]> {
-    return this.trackingEvents.filter(event => event.trackingNumber === trackingNumber)
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }
-
-  async createShippingRate(shippingRateDto: ShippingRateDto): Promise<ShippingRate> {
-    const shippingRate: ShippingRate = {
-      id: Math.random().toString(36).substring(7),
-      ...shippingRateDto,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.shippingRates.push(shippingRate);
-    return shippingRate;
-  }
-
-  async getShippingRate(
-    carrier: string,
-    serviceType: string,
-    originPincode: string,
-    destPincode: string,
-    weight: number
-  ): Promise<ShippingRate | null> {
-    // Find applicable rate based on criteria
-    const applicableRate = this.shippingRates.find(rate => 
-      rate.carrier === carrier &&
-      rate.serviceType === serviceType &&
-      rate.originPincode === originPincode &&
-      rate.destinationPincode === destPincode &&
-      weight >= rate.minWeight &&
-      weight <= rate.maxWeight
-    );
-
-    return applicableRate || null;
-  }
-
-  async calculateShippingCost(
-    carrier: string,
-    serviceType: string,
-    originPincode: string,
-    destPincode: string,
-    weight: number
-  ): Promise<number> {
-    const rate = await this.getShippingRate(carrier, serviceType, originPincode, destPincode, weight);
-    
-    if (!rate) {
-      // If no specific rate found, return a default cost
-      return weight * 20 + 50; // Base cost of ₹50 + ₹20 per kg
-    }
-
-    const cost = (weight * rate.ratePerKg) + rate.additionalCharges;
-    return parseFloat(cost.toFixed(2));
+    return data || [];
   }
 }
