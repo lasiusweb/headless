@@ -118,3 +118,19 @@
     - [x] Add shipment cancellation support
 
 [checkpoint: fcc0f70]
+
+## Phase 9: Loyalty Program & Notifications [checkpoint: 429f03e]
+- [x] Task: Enhance Loyalty Program
+    - [x] Add Supabase-backed loyalty profile management
+    - [x] Implement points earning with tier multipliers
+    - [x] Add rewards catalog and redemption
+    - [x] Implement referral program with bonus points
+    - [x] Add automatic tier upgrades
+- [x] Task: Build Notification System
+    - [x] Add SendGrid email integration
+    - [x] Add Twilio SMS integration
+    - [x] Add Twilio WhatsApp integration
+    - [x] Implement order lifecycle notifications
+    - [x] Add notification preferences management
+
+[checkpoint: 429f03e]
