@@ -18,3 +18,10 @@ export {
   UserMenu, 
   NotificationDropdown 
 } from './components/dashboard';
+
+// Navigation components (app-like)
+export {
+  BottomNav,
+  SwipeableLayout,
+  NavDrawer,
+} from './components/navigation';

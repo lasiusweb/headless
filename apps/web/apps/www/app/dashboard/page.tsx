@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DashboardLayout, Card } from '@kn/ui';
-import { useAuth, api, Order } from '@kn/lib';
-import { useRouter } from 'next/navigation';
+import { DashboardLayout, Card, useSwipeNavigation } from '@kn/ui';
+import { useAuth, api, Order, useRouter } from '@kn/lib';
+import { useRouter as useNextRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ShoppingBag, 
@@ -20,7 +20,7 @@ import {
 
 export default function DealerDashboardPage() {
   const { user, logout } = useAuth();
-  const router = useRouter();
+  const router = useNextRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -31,6 +31,14 @@ export default function DealerDashboardPage() {
     pendingPayments: 0,
     activeTickets: 0,
   });
+
+  // Swipe navigation to other sections
+  const swipeHandlers = useSwipeNavigation({
+    left: '/dashboard/orders',
+    right: undefined,
+    up: '/dashboard/knowledge-centre',
+    down: undefined,
+  }, router);
 
   useEffect(() => {
     if (!user) {
@@ -65,7 +73,7 @@ export default function DealerDashboardPage() {
 
   if (loading) {
     return (
-      <DashboardLayout variant="b2b" logoText="KN Biosciences B2B">
+      <DashboardLayout variant="b2b" logoText="KN Biosciences B2B" showBottomNav enableSwipe>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
         </div>
@@ -74,7 +82,7 @@ export default function DealerDashboardPage() {
   }
 
   return (
-    <DashboardLayout variant="b2b" logoText="KN Biosciences B2B">
+    <DashboardLayout variant="b2b" logoText="KN Biosciences B2B" showBottomNav enableSwipe>
       {/* Hero Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">

@@ -1,17 +1,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DashboardLayout, Card } from '@kn/ui';
-import { useAuth, api } from '@kn/lib';
-import { useRouter } from 'next/navigation';
+import { DashboardLayout, Card, useSwipeNavigation } from '@kn/ui';
+import { useAuth, api, useRouter } from '@kn/lib';
+import { useRouter as useNextRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShoppingBag, TrendingUp, MessageSquare, BookOpen, Phone, MapPin } from 'lucide-react';
 
 export default function D2CDashboardPage() {
   const { user, logout } = useAuth();
-  const router = useRouter();
+  const router = useNextRouter();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Swipe navigation
+  const swipeHandlers = useSwipeNavigation({
+    left: '/shop',
+    right: undefined,
+    up: '/dashboard/knowledge-centre',
+    down: undefined,
+  }, router);
 
   useEffect(() => {
     if (!user) {
@@ -36,7 +44,7 @@ export default function D2CDashboardPage() {
 
   if (loading) {
     return (
-      <DashboardLayout variant="d2c" logoText="KN Biosciences Agriculture">
+      <DashboardLayout variant="d2c" logoText="KN Biosciences Agriculture" showBottomNav enableSwipe>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
         </div>
@@ -45,7 +53,7 @@ export default function D2CDashboardPage() {
   }
 
   return (
-    <DashboardLayout variant="d2c" logoText="KN Biosciences Agriculture">
+    <DashboardLayout variant="d2c" logoText="KN Biosciences Agriculture" showBottomNav enableSwipe>
       {/* Hero Section - Farmer Focused */}
       <div className="mb-8 bg-gradient-to-r from-green-600 to-orange-600 text-white rounded-2xl p-8">
         <h1 className="text-3xl font-bold mb-2">
