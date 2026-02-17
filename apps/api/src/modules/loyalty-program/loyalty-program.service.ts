@@ -1,533 +1,523 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { 
-  CustomerLoyaltyProfile, 
-  LoyaltyTransaction, 
-  LoyaltyReward, 
-  LoyaltyCampaign,
-  Referral,
-  LoyaltyTier,
-  LoyaltyAnalytics 
-} from './interfaces/loyalty.interface';
-import { 
-  CreateLoyaltyProfileDto, 
-  UpdateLoyaltyProfileDto, 
-  CreateLoyaltyTransactionDto, 
-  CreateLoyaltyRewardDto, 
-  UpdateLoyaltyRewardDto, 
-  CreateLoyaltyCampaignDto, 
-  RedeemRewardDto,
-  EarnPointsDto
-} from './dto/loyalty.dto';
-import { OrdersService } from '../orders/orders.service';
-import { CustomersService } from '../customers/customers.service';
+import { SupabaseService } from '../../supabase/supabase.service';
+
+export interface LoyaltyProfile {
+  id: string;
+  customer_id: string;
+  points_balance: number;
+  tier: 'bronze' | 'silver' | 'gold' | 'platinum';
+  tier_points_threshold: number;
+  total_points_earned: number;
+  total_points_redeemed: number;
+  referral_code: string;
+  status: 'active' | 'inactive' | 'suspended';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LoyaltyTransaction {
+  id: string;
+  customer_id: string;
+  transaction_type: 'earn' | 'redeem' | 'bonus' | 'adjustment' | 'expiry';
+  points: number;
+  balance_after: number;
+  description: string;
+  order_id?: string;
+  redemption_code?: string;
+  status: 'pending' | 'completed' | 'cancelled' | 'expired';
+  expires_at?: string;
+  created_at: string;
+}
+
+export interface LoyaltyReward {
+  id: string;
+  name: string;
+  description: string;
+  points_required: number;
+  discount_value?: number;
+  reward_type: 'discount' | 'free_product' | 'cashback' | 'voucher';
+  is_active: boolean;
+  max_redemptions?: number;
+  times_redeemed: number;
+  valid_until?: string;
+  created_at: string;
+}
+
+export interface LoyaltyTier {
+  id: string;
+  name: 'bronze' | 'silver' | 'gold' | 'platinum';
+  points_threshold: number;
+  discount_percentage: number;
+  benefits: string[];
+  exclusive_offers: boolean;
+  priority_support: boolean;
+  early_access: boolean;
+  created_at: string;
+}
 
 @Injectable()
 export class LoyaltyProgramService {
   private readonly logger = new Logger(LoyaltyProgramService.name);
-  private loyaltyProfiles: CustomerLoyaltyProfile[] = [];
-  private loyaltyTransactions: LoyaltyTransaction[] = [];
-  private loyaltyRewards: LoyaltyReward[] = [];
-  private loyaltyCampaigns: LoyaltyCampaign[] = [];
-  private referrals: Referral[] = [];
-  private loyaltyTiers: LoyaltyTier[] = [];
-  private analytics: LoyaltyAnalytics[] = [];
+
+  // Points earning rules
+  private readonly pointsRules = {
+    baseRate: 1, // 1 point per ₹100
+    baseRateDivisor: 100,
+    tierMultipliers: {
+      bronze: 1.0,
+      silver: 1.25,
+      gold: 1.5,
+      platinum: 2.0,
+    },
+    birthdayBonus: 500,
+    referralBonus: {
+      referrer: 100,
+      referee: 50,
+    },
+    firstOrderBonus: 200,
+  };
 
   constructor(
     private configService: ConfigService,
-    private ordersService: OrdersService,
-    private customersService: CustomersService,
-  ) {
-    // Initialize default loyalty tiers
-    this.initializeDefaultTiers();
-  }
+    private supabaseService: SupabaseService,
+  ) {}
 
-  private initializeDefaultTiers(): void {
-    this.loyaltyTiers = [
-      {
-        id: 'tier-bronze',
-        name: 'Bronze',
-        pointsThreshold: 0,
-        benefits: ['Welcome bonus', 'Birthday discount'],
-        discountPercentage: 2,
-        exclusiveOffers: false,
-        prioritySupport: false,
-        earlyAccess: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'tier-silver',
-        name: 'Silver',
-        pointsThreshold: 1000,
-        benefits: ['Welcome bonus', 'Birthday discount', 'Exclusive offers'],
-        discountPercentage: 5,
-        exclusiveOffers: true,
-        prioritySupport: false,
-        earlyAccess: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'tier-gold',
-        name: 'Gold',
-        pointsThreshold: 5000,
-        benefits: ['Welcome bonus', 'Birthday discount', 'Exclusive offers', 'Early access to sales'],
-        discountPercentage: 10,
-        exclusiveOffers: true,
-        prioritySupport: true,
-        earlyAccess: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'tier-platinum',
-        name: 'Platinum',
-        pointsThreshold: 10000,
-        benefits: ['Welcome bonus', 'Birthday discount', 'Exclusive offers', 'Early access to sales', 'Priority support'],
-        discountPercentage: 15,
-        exclusiveOffers: true,
-        prioritySupport: true,
-        earlyAccess: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-  }
+  /**
+   * Get or create loyalty profile for customer
+   */
+  async getOrCreateProfile(customerId: string): Promise<LoyaltyProfile> {
+    const client = this.supabaseService.getClient();
 
-  async createLoyaltyProfile(createLoyaltyProfileDto: CreateLoyaltyProfileDto): Promise<CustomerLoyaltyProfile> {
-    // Check if customer already has a loyalty profile
-    const existingProfile = this.loyaltyProfiles.find(profile => profile.customerId === createLoyaltyProfileDto.customerId);
+    // Try to find existing profile
+    const { data: existingProfile } = await client
+      .from('loyalty_profiles')
+      .select('*')
+      .eq('customer_id', customerId)
+      .single();
+
     if (existingProfile) {
-      throw new Error(`Customer with ID ${createLoyaltyProfileDto.customerId} already has a loyalty profile`);
+      return existingProfile;
     }
 
-    // Create the loyalty profile
-    const loyaltyProfile: CustomerLoyaltyProfile = {
-      id: Math.random().toString(36).substring(7),
-      ...createLoyaltyProfileDto,
-      pointsBalance: createLoyaltyProfileDto.initialPoints || 0,
-      tier: 'bronze',
-      tierPointsThreshold: 0,
-      tierBenefits: ['Welcome bonus', 'Birthday discount'],
-      totalPointsEarned: createLoyaltyProfileDto.initialPoints || 0,
-      totalPointsRedeemed: 0,
-      lastActivityDate: new Date(),
-      enrollmentDate: new Date(),
-      status: 'active',
-      referralCode: createLoyaltyProfileDto.referralCode || `REF${Date.now()}`,
-      totalReferrals: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    // Create new profile
+    const referralCode = `REF${customerId.substring(0, 4)}${Date.now()}`;
+    const { data: newProfile, error } = await client
+      .from('loyalty_profiles')
+      .insert([{
+        customer_id: customerId,
+        points_balance: 0,
+        tier: 'bronze',
+        tier_points_threshold: 0,
+        total_points_earned: 0,
+        total_points_redeemed: 0,
+        referral_code: referralCode,
+        status: 'active',
+      }])
+      .select()
+      .single();
 
-    this.loyaltyProfiles.push(loyaltyProfile);
-
-    // Add referral if applicable
-    if (createLoyaltyProfileDto.referredBy) {
-      await this.processReferral(createLoyaltyProfileDto.referredBy, loyaltyProfile.id);
+    if (error) {
+      this.logger.error(`Error creating loyalty profile: ${error.message}`);
+      throw error;
     }
 
-    this.logger.log(`Loyalty profile created: ${loyaltyProfile.id} for customer ${loyaltyProfile.customerId}`);
-
-    return loyaltyProfile;
+    this.logger.log(`Created loyalty profile for customer ${customerId}`);
+    return newProfile;
   }
 
-  async updateLoyaltyProfile(id: string, updateLoyaltyProfileDto: UpdateLoyaltyProfileDto): Promise<CustomerLoyaltyProfile> {
-    const index = this.loyaltyProfiles.findIndex(profile => profile.id === id);
-    if (index === -1) {
-      throw new Error(`Loyalty profile with ID ${id} not found`);
+  /**
+   * Earn points for a purchase
+   */
+  async earnPoints(params: {
+    customerId: string;
+    orderId: string;
+    orderValue: number;
+    isBirthday?: boolean;
+    isFirstOrder?: boolean;
+    campaignId?: string;
+  }): Promise<LoyaltyTransaction> {
+    const client = this.supabaseService.getClient();
+    const { customerId, orderId, orderValue, isBirthday, isFirstOrder, campaignId } = params;
+
+    // Get customer's loyalty profile
+    const profile = await this.getOrCreateProfile(customerId);
+
+    // Calculate base points
+    let pointsEarned = Math.floor(orderValue / this.pointsRules.baseRateDivisor) * this.pointsRules.baseRate;
+
+    // Apply tier multiplier
+    const tierMultiplier = this.pointsRules.tierMultipliers[profile.tier];
+    pointsEarned = Math.floor(pointsEarned * tierMultiplier);
+
+    // Add birthday bonus
+    if (isBirthday) {
+      pointsEarned += this.pointsRules.birthdayBonus;
     }
 
-    const oldProfile = { ...this.loyaltyProfiles[index] };
-    this.loyaltyProfiles[index] = {
-      ...this.loyaltyProfiles[index],
-      ...updateLoyaltyProfileDto,
-      lastActivityDate: new Date(),
-      updatedAt: new Date(),
-    };
-
-    // Update tier if points balance changed significantly
-    if (updateLoyaltyProfileDto.pointsBalance !== undefined) {
-      this.loyaltyProfiles[index] = this.updateTierIfEligible(this.loyaltyProfiles[index]);
+    // Add first order bonus
+    if (isFirstOrder) {
+      pointsEarned += this.pointsRules.firstOrderBonus;
     }
 
-    this.logger.log(`Loyalty profile updated: ${id} for customer ${this.loyaltyProfiles[index].customerId}`);
-
-    return this.loyaltyProfiles[index];
-  }
-
-  async getLoyaltyProfileByCustomerId(customerId: string): Promise<CustomerLoyaltyProfile> {
-    const profile = this.loyaltyProfiles.find(profile => profile.customerId === customerId);
-    if (!profile) {
-      throw new Error(`Loyalty profile for customer ${customerId} not found`);
-    }
-    return profile;
-  }
-
-  async getLoyaltyProfileById(id: string): Promise<CustomerLoyaltyProfile> {
-    const profile = this.loyaltyProfiles.find(profile => profile.id === id);
-    if (!profile) {
-      throw new Error(`Loyalty profile with ID ${id} not found`);
-    }
-    return profile;
-  }
-
-  async createLoyaltyTransaction(createLoyaltyTransactionDto: CreateLoyaltyTransactionDto): Promise<LoyaltyTransaction> {
-    const transaction: LoyaltyTransaction = {
-      id: Math.random().toString(36).substring(7),
-      ...createLoyaltyTransactionDto,
-      status: createLoyaltyTransactionDto.status || 'completed',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.loyaltyTransactions.push(transaction);
-
-    // Update customer's loyalty profile based on transaction
-    const profileIndex = this.loyaltyProfiles.findIndex(profile => profile.customerId === createLoyaltyTransactionDto.customerId);
-    if (profileIndex !== -1) {
-      if (createLoyaltyTransactionDto.transactionType === 'earn' || createLoyaltyTransactionDto.transactionType === 'bonus') {
-        this.loyaltyProfiles[profileIndex] = {
-          ...this.loyaltyProfiles[profileIndex],
-          pointsBalance: this.loyaltyProfiles[profileIndex].pointsBalance + createLoyaltyTransactionDto.points,
-          totalPointsEarned: this.loyaltyProfiles[profileIndex].totalPointsEarned + createLoyaltyTransactionDto.points,
-          lastActivityDate: new Date(),
-          updatedAt: new Date(),
-        };
-      } else if (createLoyaltyTransactionDto.transactionType === 'redeem') {
-        this.loyaltyProfiles[profileIndex] = {
-          ...this.loyaltyProfiles[profileIndex],
-          pointsBalance: this.loyaltyProfiles[profileIndex].pointsBalance - createLoyaltyTransactionDto.points,
-          totalPointsRedeemed: this.loyaltyProfiles[profileIndex].totalPointsRedeemed + createLoyaltyTransactionDto.points,
-          lastActivityDate: new Date(),
-          updatedAt: new Date(),
-        };
+    // Apply campaign multiplier if applicable
+    if (campaignId) {
+      const campaign = await this.getCampaign(campaignId);
+      if (campaign && campaign.is_active) {
+        const campaignMultiplier = campaign.multiplier || 1;
+        pointsEarned = Math.floor(pointsEarned * campaignMultiplier);
       }
-
-      // Update tier if needed
-      this.loyaltyProfiles[profileIndex] = this.updateTierIfEligible(this.loyaltyProfiles[profileIndex]);
     }
 
-    this.logger.log(`Loyalty transaction created: ${transaction.id} for customer ${createLoyaltyTransactionDto.customerId}`);
+    // Create transaction
+    const newBalance = profile.points_balance + pointsEarned;
+    const { data: transaction, error } = await client
+      .from('loyalty_transactions')
+      .insert([{
+        customer_id: customerId,
+        transaction_type: 'earn',
+        points: pointsEarned,
+        balance_after: newBalance,
+        description: `Earned ${pointsEarned} points on order ${orderId}`,
+        order_id: orderId,
+        status: 'completed',
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      this.logger.error(`Error creating loyalty transaction: ${error.message}`);
+      throw error;
+    }
+
+    // Update profile
+    await client
+      .from('loyalty_profiles')
+      .update({
+        points_balance: newBalance,
+        total_points_earned: profile.total_points_earned + pointsEarned,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', profile.id);
+
+    // Check and update tier
+    await this.updateTierIfEligible(customerId, newBalance);
+
+    this.logger.log(`Customer ${customerId} earned ${pointsEarned} points (new balance: ${newBalance})`);
 
     return transaction;
   }
 
-  async createLoyaltyReward(createLoyaltyRewardDto: CreateLoyaltyRewardDto): Promise<LoyaltyReward> {
-    const reward: LoyaltyReward = {
-      id: Math.random().toString(36).substring(7),
-      ...createLoyaltyRewardDto,
-      timesRedeemed: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  /**
+   * Redeem points for a reward
+   */
+  async redeemPoints(params: {
+    customerId: string;
+    rewardId: string;
+    orderId?: string;
+  }): Promise<LoyaltyTransaction> {
+    const client = this.supabaseService.getClient();
+    const { customerId, rewardId, orderId } = params;
 
-    this.loyaltyRewards.push(reward);
+    // Get profile and reward
+    const profile = await this.getOrCreateProfile(customerId);
+    const reward = await this.getReward(rewardId);
 
-    this.logger.log(`Loyalty reward created: ${reward.id} - ${reward.name}`);
-
-    return reward;
-  }
-
-  async updateLoyaltyReward(id: string, updateLoyaltyRewardDto: UpdateLoyaltyRewardDto): Promise<LoyaltyReward> {
-    const index = this.loyaltyRewards.findIndex(reward => reward.id === id);
-    if (index === -1) {
-      throw new Error(`Loyalty reward with ID ${id} not found`);
+    if (!reward.is_active) {
+      throw new Error('Reward is not active');
     }
 
-    this.loyaltyRewards[index] = {
-      ...this.loyaltyRewards[index],
-      ...updateLoyaltyRewardDto,
-      updatedAt: new Date(),
-    };
-
-    this.logger.log(`Loyalty reward updated: ${id} - ${this.loyaltyRewards[index].name}`);
-
-    return this.loyaltyRewards[index];
-  }
-
-  async createLoyaltyCampaign(createLoyaltyCampaignDto: CreateLoyaltyCampaignDto): Promise<LoyaltyCampaign> {
-    const campaign: LoyaltyCampaign = {
-      id: Math.random().toString(36).substring(7),
-      ...createLoyaltyCampaignDto,
-      startDate: new Date(createLoyaltyCampaignDto.startDate),
-      endDate: new Date(createLoyaltyCampaignDto.endDate),
-      participantsCount: 0,
-      rewards: createLoyaltyCampaignDto.rewards.map(reward => ({
-        id: Math.random().toString(36).substring(7),
-        ...reward,
-        timesRedeemed: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.loyaltyCampaigns.push(campaign);
-
-    this.logger.log(`Loyalty campaign created: ${campaign.id} - ${campaign.name}`);
-
-    return campaign;
-  }
-
-  async redeemReward(redeemRewardDto: RedeemRewardDto): Promise<LoyaltyTransaction> {
-    const reward = this.loyaltyRewards.find(r => r.id === redeemRewardDto.rewardId);
-    if (!reward) {
-      throw new Error(`Loyalty reward with ID ${redeemRewardDto.rewardId} not found`);
-    }
-
-    if (!reward.isActive) {
-      throw new Error(`Loyalty reward ${reward.name} is not active`);
-    }
-
-    if (reward.maxRedemptions && reward.timesRedeemed >= reward.maxRedemptions) {
-      throw new Error(`Loyalty reward ${reward.name} has reached maximum redemptions`);
-    }
-
-    const profile = this.loyaltyProfiles.find(p => p.customerId === redeemRewardDto.customerId);
-    if (!profile) {
-      throw new Error(`Loyalty profile for customer ${redeemRewardDto.customerId} not found`);
-    }
-
-    if (profile.pointsBalance < reward.pointsRequired) {
-      throw new Error(`Insufficient points. Customer has ${profile.pointsBalance}, but reward requires ${reward.pointsRequired}`);
+    if (profile.points_balance < reward.points_required) {
+      throw new Error(`Insufficient points. Required: ${reward.points_required}, Available: ${profile.points_balance}`);
     }
 
     // Create redemption transaction
-    const redemptionTransaction: LoyaltyTransaction = {
-      id: Math.random().toString(36).substring(7),
-      customerId: redeemRewardDto.customerId,
-      transactionType: 'redeem',
-      points: reward.pointsRequired,
-      description: `Redeemed reward: ${reward.name}`,
-      orderId: redeemRewardDto.orderId,
-      redemptionCode: `REDEM${Date.now()}`,
-      status: 'completed',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const newBalance = profile.points_balance - reward.points_required;
+    const redemptionCode = `REDEEM${Date.now()}`;
+    const { data: transaction, error } = await client
+      .from('loyalty_transactions')
+      .insert([{
+        customer_id: customerId,
+        transaction_type: 'redeem',
+        points: reward.points_required,
+        balance_after: newBalance,
+        description: `Redeemed: ${reward.name}`,
+        order_id: orderId,
+        redemption_code: redemptionCode,
+        status: 'completed',
+      }])
+      .select()
+      .single();
 
-    this.loyaltyTransactions.push(redemptionTransaction);
-
-    // Update customer's loyalty profile
-    const profileIndex = this.loyaltyProfiles.findIndex(p => p.customerId === redeemRewardDto.customerId);
-    if (profileIndex !== -1) {
-      this.loyaltyProfiles[profileIndex] = {
-        ...this.loyaltyProfiles[profileIndex],
-        pointsBalance: this.loyaltyProfiles[profileIndex].pointsBalance - reward.pointsRequired,
-        totalPointsRedeemed: this.loyaltyProfiles[profileIndex].totalPointsRedeemed + reward.pointsRequired,
-        lastActivityDate: new Date(),
-        updatedAt: new Date(),
-      };
-
-      // Update tier if needed
-      this.loyaltyProfiles[profileIndex] = this.updateTierIfEligible(this.loyaltyProfiles[profileIndex]);
+    if (error) {
+      this.logger.error(`Error redeeming points: ${error.message}`);
+      throw error;
     }
+
+    // Update profile
+    await client
+      .from('loyalty_profiles')
+      .update({
+        points_balance: newBalance,
+        total_points_redeemed: profile.total_points_redeemed + reward.points_required,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', profile.id);
 
     // Update reward redemption count
-    const rewardIndex = this.loyaltyRewards.findIndex(r => r.id === redeemRewardDto.rewardId);
-    if (rewardIndex !== -1) {
-      this.loyaltyRewards[rewardIndex] = {
-        ...this.loyaltyRewards[rewardIndex],
-        timesRedeemed: this.loyaltyRewards[rewardIndex].timesRedeemed + 1,
-        updatedAt: new Date(),
-      };
-    }
+    await client
+      .from('loyalty_rewards')
+      .update({
+        times_redeemed: reward.times_redeemed + 1,
+      })
+      .eq('id', rewardId);
 
-    this.logger.log(`Reward redeemed: ${reward.id} by customer ${redeemRewardDto.customerId}`);
+    this.logger.log(`Customer ${customerId} redeemed ${reward.points_required} points for ${reward.name}`);
 
-    return redemptionTransaction;
+    return transaction;
   }
 
-  async earnPoints(earnPointsDto: EarnPointsDto): Promise<LoyaltyTransaction> {
-    const profile = this.loyaltyProfiles.find(p => p.customerId === earnPointsDto.customerId);
-    if (!profile) {
-      throw new Error(`Loyalty profile for customer ${earnPointsDto.customerId} not found`);
-    }
+  /**
+   * Process referral
+   */
+  async processReferral(referrerCustomerId: string, refereeCustomerId: string): Promise<void> {
+    const client = this.supabaseService.getClient();
 
-    // Calculate points to earn based on order value and campaign
-    let pointsMultiplier = 1; // Default 1 point per ₹1 spent
-    let bonusPoints = 0;
+    // Get referrer profile
+    const referrerProfile = await this.getOrCreateProfile(referrerCustomerId);
+    const refereeProfile = await this.getOrCreateProfile(refereeCustomerId);
 
-    if (earnPointsDto.campaignId) {
-      const campaign = this.loyaltyCampaigns.find(c => c.id === earnPointsDto.campaignId);
-      if (campaign && campaign.isActive && 
-          new Date() >= campaign.startDate && 
-          new Date() <= campaign.endDate) {
-        
-        if (campaign.campaignType === 'points-multiplier' && campaign.multiplier) {
-          pointsMultiplier = campaign.multiplier;
-        } else if (campaign.campaignType === 'bonus-points' && campaign.bonusPoints) {
-          bonusPoints = campaign.bonusPoints;
-        }
-      }
-    }
+    // Create referral record
+    const { data: referral, error: referralError } = await client
+      .from('referrals')
+      .insert([{
+        referrer_id: referrerCustomerId,
+        referee_id: refereeCustomerId,
+        referrer_reward_points: this.pointsRules.referralBonus.referrer,
+        referee_reward_points: this.pointsRules.referralBonus.referee,
+        status: 'completed',
+      }])
+      .select()
+      .single();
 
-    // Calculate points earned
-    const pointsEarned = Math.floor(earnPointsDto.orderValue * pointsMultiplier) + bonusPoints;
-
-    // Create earn transaction
-    const earnTransaction: LoyaltyTransaction = {
-      id: Math.random().toString(36).substring(7),
-      customerId: earnPointsDto.customerId,
-      transactionType: 'earn',
-      points: pointsEarned,
-      description: `Earned points for order ${earnPointsDto.orderId}`,
-      orderId: earnPointsDto.orderId,
-      status: 'completed',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.loyaltyTransactions.push(earnTransaction);
-
-    // Update customer's loyalty profile
-    const profileIndex = this.loyaltyProfiles.findIndex(p => p.customerId === earnPointsDto.customerId);
-    if (profileIndex !== -1) {
-      this.loyaltyProfiles[profileIndex] = {
-        ...this.loyaltyProfiles[profileIndex],
-        pointsBalance: this.loyaltyProfiles[profileIndex].pointsBalance + pointsEarned,
-        totalPointsEarned: this.loyaltyProfiles[profileIndex].totalPointsEarned + pointsEarned,
-        lastActivityDate: new Date(),
-        updatedAt: new Date(),
-      };
-
-      // Update tier if needed
-      this.loyaltyProfiles[profileIndex] = this.updateTierIfEligible(this.loyaltyProfiles[profileIndex]);
-    }
-
-    this.logger.log(`Points earned: ${pointsEarned} for customer ${earnPointsDto.customerId} on order ${earnPointsDto.orderId}`);
-
-    return earnTransaction;
-  }
-
-  async getLoyaltyTransactionsByCustomer(customerId: string): Promise<LoyaltyTransaction[]> {
-    return this.loyaltyTransactions.filter(transaction => transaction.customerId === customerId);
-  }
-
-  async getLoyaltyRewards(): Promise<LoyaltyReward[]> {
-    return [...this.loyaltyRewards];
-  }
-
-  async getActiveLoyaltyCampaigns(): Promise<LoyaltyCampaign[]> {
-    const now = new Date();
-    return this.loyaltyCampaigns.filter(campaign => 
-      campaign.isActive && 
-      now >= campaign.startDate && 
-      now <= campaign.endDate
-    );
-  }
-
-  async getLoyaltyAnalytics(): Promise<LoyaltyAnalytics> {
-    const now = new Date();
-    const period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    
-    // Calculate analytics
-    const totalMembers = this.loyaltyProfiles.length;
-    const activeMembers = this.loyaltyProfiles.filter(p => p.status === 'active').length;
-    const totalPointsIssued = this.loyaltyTransactions
-      .filter(t => t.transactionType === 'earn' || t.transactionType === 'bonus')
-      .reduce((sum, t) => sum + t.points, 0);
-    const totalPointsRedeemed = this.loyaltyTransactions
-      .filter(t => t.transactionType === 'redeem')
-      .reduce((sum, t) => sum + t.points, 0);
-    const redemptionRate = totalPointsRedeemed / (totalPointsIssued || 1) * 100;
-    const averagePointsPerMember = totalPointsIssued / (totalMembers || 1);
-    const referralCount = this.referrals.length;
-    const campaignParticipation = this.loyaltyCampaigns.reduce((sum, c) => sum + c.participantsCount, 0);
-
-    const analytics: LoyaltyAnalytics = {
-      id: Math.random().toString(36).substring(7),
-      period,
-      totalMembers,
-      activeMembers,
-      totalPointsIssued,
-      totalPointsRedeemed,
-      redemptionRate,
-      averagePointsPerMember,
-      referralCount,
-      campaignParticipation,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.analytics.push(analytics);
-
-    return analytics;
-  }
-
-  private updateTierIfEligible(profile: CustomerLoyaltyProfile): CustomerLoyaltyProfile {
-    // Find the highest tier the customer qualifies for
-    let newTier: 'bronze' | 'silver' | 'gold' | 'platinum' = 'bronze';
-    let newTierThreshold = 0;
-    let newBenefits: string[] = [];
-    let newDiscountPercentage = 0;
-
-    for (const tier of this.loyaltyTiers) {
-      if (profile.pointsBalance >= tier.pointsThreshold) {
-        newTier = tier.name.toLowerCase() as 'bronze' | 'silver' | 'gold' | 'platinum';
-        newTierThreshold = tier.pointsThreshold;
-        newBenefits = tier.benefits;
-        newDiscountPercentage = tier.discountPercentage;
-      }
-    }
-
-    // Only update if the tier has changed
-    if (profile.tier !== newTier) {
-      return {
-        ...profile,
-        tier: newTier,
-        tierPointsThreshold: newTierThreshold,
-        tierBenefits: newBenefits,
-        discountPercentage: newDiscountPercentage,
-      };
-    }
-
-    return profile;
-  }
-
-  private async processReferral(referrerId: string, refereeId: string): Promise<void> {
-    // Find the referrer's loyalty profile
-    const referrerProfile = this.loyaltyProfiles.find(p => p.id === referrerId);
-    if (!referrerProfile) {
-      this.logger.warn(`Referrer profile not found: ${referrerId}`);
+    if (referralError) {
+      this.logger.error(`Error creating referral: ${referralError.message}`);
       return;
     }
 
-    // Create referral record
-    const referral: Referral = {
-      id: Math.random().toString(36).substring(7),
-      referrerId,
-      refereeId,
-      referrerRewardPoints: 100, // Default reward for referrer
-      refereeRewardPoints: 50,   // Default reward for referee
-      status: 'pending',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    // Award points to referrer
+    await this.earnPoints({
+      customerId: referrerCustomerId,
+      orderId: `REF-${referral.id}`,
+      orderValue: 0,
+      isBirthday: false,
+      isFirstOrder: false,
+    });
+
+    // Award points to referee
+    await this.earnPoints({
+      customerId: refereeCustomerId,
+      orderId: `REF-REWARD-${referral.id}`,
+      orderValue: 0,
+      isBirthday: false,
+      isFirstOrder: false,
+    });
+
+    this.logger.log(`Referral processed: ${referrerCustomerId} referred ${refereeCustomerId}`);
+  }
+
+  /**
+   * Get available rewards
+   */
+  async getAvailableRewards(customerId?: string): Promise<LoyaltyReward[]> {
+    const client = this.supabaseService.getClient();
+
+    let query = client
+      .from('loyalty_rewards')
+      .select('*')
+      .eq('is_active', true);
+
+    if (customerId) {
+      const profile = await this.getOrCreateProfile(customerId);
+      // Only show rewards customer can afford
+      query = query.lte('points_required', profile.points_balance);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      this.logger.error(`Error fetching rewards: ${error.message}`);
+      return [];
+    }
+
+    return data;
+  }
+
+  /**
+   * Get customer's transaction history
+   */
+  async getTransactionHistory(customerId: string, limit = 50): Promise<LoyaltyTransaction[]> {
+    const client = this.supabaseService.getClient();
+
+    const { data, error } = await client
+      .from('loyalty_transactions')
+      .select('*')
+      .eq('customer_id', customerId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      this.logger.error(`Error fetching transactions: ${error.message}`);
+      return [];
+    }
+
+    return data;
+  }
+
+  /**
+   * Get loyalty analytics for customer
+   */
+  async getCustomerAnalytics(customerId: string) {
+    const client = this.supabaseService.getClient();
+    const profile = await this.getOrCreateProfile(customerId);
+
+    // Get tier info
+    const tier = await client
+      .from('loyalty_tiers')
+      .select('*')
+      .eq('name', profile.tier)
+      .single();
+
+    // Get points to next tier
+    const nextTier = await client
+      .from('loyalty_tiers')
+      .select('*')
+      .gt('points_threshold', profile.total_points_earned)
+      .order('points_threshold', { ascending: true })
+      .limit(1)
+      .single();
+
+    const pointsToNextTier = nextTier.data
+      ? nextTier.data.points_threshold - profile.total_points_earned
+      : 0;
+
+    return {
+      profile,
+      tier: tier.data,
+      pointsToNextTier,
+      nextTier: nextTier.data || null,
     };
+  }
 
-    this.referrals.push(referral);
+  /**
+   * Update tier based on points
+   */
+  private async updateTierIfEligible(customerId: string, pointsBalance: number): Promise<void> {
+    const client = this.supabaseService.getClient();
 
-    // Add pending transaction for referrer
-    await this.createLoyaltyTransaction({
-      customerId: referrerId,
-      transactionType: 'bonus',
-      points: 100,
-      description: 'Referral bonus for successful referral',
-      status: 'pending',
-    });
+    // Find eligible tier
+    const { data: eligibleTier } = await client
+      .from('loyalty_tiers')
+      .select('*')
+      .lte('points_threshold', pointsBalance)
+      .order('points_threshold', { ascending: false })
+      .limit(1)
+      .single();
 
-    // Add pending transaction for referee
-    await this.createLoyaltyTransaction({
-      customerId: refereeId,
-      transactionType: 'bonus',
-      points: 50,
-      description: 'Welcome bonus for joining via referral',
-      status: 'pending',
-    });
+    if (eligibleTier) {
+      await client
+        .from('loyalty_profiles')
+        .update({
+          tier: eligibleTier.name,
+          tier_points_threshold: eligibleTier.points_threshold,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('customer_id', customerId);
 
-    this.logger.log(`Referral processed: ${referrerId} referred ${refereeId}`);
+      this.logger.log(`Customer ${customerId} upgraded to ${eligibleTier.name} tier`);
+    }
+  }
+
+  /**
+   * Get campaign by ID
+   */
+  private async getCampaign(campaignId: string) {
+    const client = this.supabaseService.getClient();
+    const { data } = await client
+      .from('loyalty_campaigns')
+      .select('*')
+      .eq('id', campaignId)
+      .single();
+    return data;
+  }
+
+  /**
+   * Get reward by ID
+   */
+  private async getReward(rewardId: string) {
+    const client = this.supabaseService.getClient();
+    const { data } = await client
+      .from('loyalty_rewards')
+      .select('*')
+      .eq('id', rewardId)
+      .single();
+    return data;
+  }
+
+  /**
+   * Get profile by referral code
+   */
+  async getProfileByReferralCode(referralCode: string): Promise<LoyaltyProfile | null> {
+    const client = this.supabaseService.getClient();
+    const { data } = await client
+      .from('loyalty_profiles')
+      .select('*')
+      .eq('referral_code', referralCode)
+      .single();
+    return data;
+  }
+
+  /**
+   * Expire old points (run as scheduled job)
+   */
+  async expireOldPoints(expiryMonths = 12): Promise<number> {
+    const client = this.supabaseService.getClient();
+    const expiryDate = new Date();
+    expiryDate.setMonth(expiryDate.getMonth() - expiryMonths);
+
+    // Find expired transactions
+    const { data: expiredTransactions } = await client
+      .from('loyalty_transactions')
+      .select('customer_id, points')
+      .eq('transaction_type', 'earn')
+      .lt('created_at', expiryDate.toISOString())
+      .is('expires_at', null);
+
+    if (!expiredTransactions || expiredTransactions.length === 0) {
+      return 0;
+    }
+
+    // Mark as expired and deduct points
+    let expiredCount = 0;
+    for (const transaction of expiredTransactions) {
+      await client
+        .from('loyalty_transactions')
+        .update({
+          status: 'expired',
+          expires_at: new Date().toISOString(),
+        })
+        .eq('id', transaction.id);
+
+      // Deduct from balance
+      await client.rpc('decrement_loyalty_points', {
+        p_customer_id: transaction.customer_id,
+        p_points: transaction.points,
+      });
+
+      expiredCount++;
+    }
+
+    this.logger.log(`Expired ${expiredCount} point transactions`);
+    return expiredCount;
   }
 }
