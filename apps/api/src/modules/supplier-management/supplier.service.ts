@@ -1,411 +1,436 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { SupabaseService } from '../../supabase/supabase.service';
+
+export interface Supplier {
+  id: string;
+  name: string;
+  contact_person: string;
+  email: string;
+  phone: string;
+  gst_number?: string;
+  pan_number?: string;
+  address: any;
+  payment_terms: number;
+  credit_limit?: number;
+  status: 'active' | 'inactive' | 'suspended';
+  rating?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  po_number: string;
+  supplier_id: string;
+  items: any[];
+  total_amount: number;
+  status: 'draft' | 'pending' | 'approved' | 'received' | 'cancelled';
+  expected_delivery_date: string;
+  actual_delivery_date?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PurchaseOrderItem {
+  id: string;
+  po_id: string;
+  product_id: string;
+  variant_id: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  received_quantity?: number;
+  created_at: string;
+}
 
 @Injectable()
 export class SupplierService {
   private readonly logger = new Logger(SupplierService.name);
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private configService: ConfigService,
+    private supabaseService: SupabaseService,
+  ) {}
 
-  async findAll(filters?: { 
-    status?: string; 
-    type?: 'manufacturer' | 'distributor' | 'wholesaler' | 'logistics';
-    search?: string;
-    limit?: number;
-    offset?: number;
-  }) {
-    let query = this.supabaseService.getClient()
+  /**
+   * Get all suppliers
+   */
+  async getAllSuppliers(): Promise<Supplier[]> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
       .from('suppliers')
-      .select(`
-        *,
-        products:supplier_products(count),
-        orders:purchase_orders(count)
-      `)
-      .order('created_at', { ascending: false });
-
-    if (filters?.status) {
-      query = query.eq('status', filters.status);
-    }
-
-    if (filters?.type) {
-      query = query.eq('type', filters.type);
-    }
-
-    if (filters?.search) {
-      query = query.or(
-        `name.ilike.%${filters.search}%,company_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,gst_number.ilike.%${filters.search}%`
-      );
-    }
-
-    if (filters?.limit) {
-      query = query.limit(filters.limit);
-    }
-
-    if (filters?.offset) {
-      query = query.offset(filters.offset);
-    }
-
-    const { data, error } = await query;
+      .select('*')
+      .eq('status', 'active')
+      .order('name', { ascending: true });
 
     if (error) {
-      throw new Error(error.message);
+      this.logger.error(`Error fetching suppliers: ${error.message}`);
+      return [];
     }
 
     return data;
   }
 
-  async findOne(id: string) {
-    const { data, error } = await this.supabaseService.getClient()
+  /**
+   * Get supplier by ID
+   */
+  async getSupplierById(id: string): Promise<Supplier> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
       .from('suppliers')
-      .select(`
-        *,
-        products:supplier_products(*, product:products(name, slug)),
-        orders:purchase_orders(*)
-      `)
+      .select('*')
       .eq('id', id)
       .single();
 
-    if (error) {
-      throw new NotFoundException('Supplier not found');
+    if (error || !data) {
+      throw new Error(`Supplier with ID ${id} not found`);
     }
 
     return data;
   }
 
-  async create(createSupplierDto: CreateSupplierDto) {
-    const { data, error } = await this.supabaseService.getClient()
+  /**
+   * Create supplier
+   */
+  async createSupplier(supplierData: Partial<Supplier>): Promise<Supplier> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
       .from('suppliers')
-      .insert([
-        {
-          name: createSupplierDto.name,
-          company_name: createSupplierDto.companyName,
-          email: createSupplierDto.email,
-          phone: createSupplierDto.phone,
-          gst_number: createSupplierDto.gstNumber,
-          pan_number: createSupplierDto.panNumber,
-          type: createSupplierDto.type,
-          address: createSupplierDto.address,
-          bank_details: createSupplierDto.bankDetails,
-          status: 'pending_verification',
-          credit_limit: createSupplierDto.creditLimit || 0,
-          payment_terms: createSupplierDto.paymentTerms || 'net_30',
-          rating: 0,
-          total_orders: 0,
-          total_spent: 0,
-        }
-      ])
+      .insert([{
+        ...supplierData,
+        status: supplierData.status || 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }])
       .select()
       .single();
 
     if (error) {
-      throw new Error(error.message);
+      this.logger.error(`Error creating supplier: ${error.message}`);
+      throw error;
     }
 
+    this.logger.log(`Supplier created: ${data.id} - ${data.name}`);
     return data;
   }
 
-  async update(id: string, updateSupplierDto: UpdateSupplierDto) {
-    const { data, error } = await this.supabaseService.getClient()
+  /**
+   * Update supplier
+   */
+  async updateSupplier(id: string, supplierData: Partial<Supplier>): Promise<Supplier> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
       .from('suppliers')
       .update({
-        ...updateSupplierDto,
+        ...supplierData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
       .select()
       .single();
 
-    if (error) {
-      throw new Error(error.message);
+    if (error || !data) {
+      throw new Error(`Supplier with ID ${id} not found`);
     }
 
+    this.logger.log(`Supplier updated: ${id}`);
     return data;
   }
 
-  async updateStatus(id: string, status: string, updatedBy: string) {
-    const validStatuses = ['active', 'inactive', 'suspended', 'pending_verification'];
-    if (!validStatuses.includes(status)) {
-      throw new Error(`Invalid status: ${status}`);
-    }
+  /**
+   * Create purchase order
+   */
+  async createPurchaseOrder(poData: {
+    supplier_id: string;
+    items: Array<{
+      product_id: string;
+      variant_id: string;
+      quantity: number;
+      unit_price: number;
+    }>;
+    expected_delivery_date: string;
+    notes?: string;
+  }): Promise<PurchaseOrder> {
+    const client = this.supabaseService.getClient();
 
-    const { data, error } = await this.supabaseService.getClient()
-      .from('suppliers')
-      .update({
-        status,
+    // Generate PO number
+    const poNumber = `PO${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+
+    // Calculate total
+    const totalAmount = poData.items.reduce(
+      (sum, item) => sum + (item.quantity * item.unit_price),
+      0
+    );
+
+    // Create PO
+    const { data: po, error: poError } = await client
+      .from('purchase_orders')
+      .insert([{
+        po_number: poNumber,
+        supplier_id: poData.supplier_id,
+        total_amount: totalAmount,
+        status: 'pending',
+        expected_delivery_date: poData.expected_delivery_date,
+        notes: poData.notes,
+        created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        updated_by: updatedBy,
-      })
-      .eq('id', id)
+      }])
       .select()
       .single();
 
-    if (error) {
-      throw new Error(error.message);
+    if (poError) {
+      this.logger.error(`Error creating PO: ${poError.message}`);
+      throw poError;
     }
 
-    return data;
+    // Create PO items
+    const poItems = poData.items.map(item => ({
+      po_id: po.id,
+      product_id: item.product_id,
+      variant_id: item.variant_id,
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+      total_price: item.quantity * item.unit_price,
+      created_at: new Date().toISOString(),
+    }));
+
+    const { error: itemsError } = await client
+      .from('purchase_order_items')
+      .insert(poItems);
+
+    if (itemsError) {
+      this.logger.error(`Error creating PO items: ${itemsError.message}`);
+    }
+
+    this.logger.log(`Purchase order created: ${po.id} - ${poNumber}`);
+    return { ...po, items: poItems };
   }
 
-  async remove(id: string) {
-    const { error } = await this.supabaseService.getClient()
-      .from('suppliers')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return { message: 'Supplier deleted successfully' };
-  }
-
-  async getSupplierProducts(supplierId: string) {
-    const { data, error } = await this.supabaseService.getClient()
-      .from('supplier_products')
-      .select(`
-        *,
-        product:products(name, slug, description),
-        variant:product_variants(name, sku)
-      `)
-      .eq('supplier_id', supplierId);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data;
-  }
-
-  async addProductToSupplier(supplierId: string, productId: string, variantId: string, cost: number) {
-    const { data, error } = await this.supabaseService.getClient()
-      .from('supplier_products')
-      .insert([
-        {
-          supplier_id: supplierId,
-          product_id: productId,
-          variant_id: variantId,
-          cost_per_unit: cost,
-          is_active: true,
-        }
-      ])
-      .select()
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data;
-  }
-
-  async getSupplierOrders(supplierId: string, filters?: { 
-    status?: string; 
-    startDate?: string; 
-    endDate?: string 
-  }) {
-    let query = this.supabaseService.getClient()
-      .from('purchase_orders')
-      .select(`
-        *,
-        items:purchase_order_items(*, variant:product_variants(name, sku))
-      `)
-      .eq('supplier_id', supplierId)
-      .order('created_at', { ascending: false });
-
-    if (filters?.status) {
-      query = query.eq('status', filters.status);
-    }
-
-    if (filters?.startDate) {
-      query = query.gte('created_at', filters.startDate);
-    }
-
-    if (filters?.endDate) {
-      query = query.lte('created_at', filters.endDate);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data;
-  }
-
-  async createPurchaseOrder(createPurchaseOrderDto: CreatePurchaseOrderDto) {
-    // Calculate totals
-    let subtotal = 0;
-    for (const item of createPurchaseOrderDto.items) {
-      subtotal += item.quantity * item.unitCost;
-    }
-
-    const taxAmount = subtotal * 0.18; // 18% GST
-    const totalAmount = subtotal + taxAmount;
-
-    // Create the purchase order
-    const { data: order, error: orderError } = await this.supabaseService.getClient()
-      .from('purchase_orders')
-      .insert([
-        {
-          supplier_id: createPurchaseOrderDto.supplierId,
-          order_number: `PO${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
-          status: 'pending',
-          subtotal: subtotal,
-          tax_amount: taxAmount,
-          total_amount: totalAmount,
-          currency: 'INR',
-          notes: createPurchaseOrderDto.notes,
-          expected_delivery_date: createPurchaseOrderDto.expectedDeliveryDate,
-        }
-      ])
-      .select()
-      .single();
-
-    if (orderError) {
-      throw new Error(orderError.message);
-    }
-
-    // Create order items
-    for (const item of createPurchaseOrderDto.items) {
-      const { error: itemError } = await this.supabaseService.getClient()
-        .from('purchase_order_items')
-        .insert([
-          {
-            order_id: order.id,
-            variant_id: item.variantId,
-            quantity: item.quantity,
-            unit_cost: item.unitCost,
-            total_cost: item.quantity * item.unitCost,
-          }
-        ]);
-
-      if (itemError) {
-        throw new Error(itemError.message);
-      }
-    }
-
-    // Return the complete order with items
-    const { data: fullOrder, error: fullOrderError } = await this.supabaseService.getClient()
-      .from('purchase_orders')
-      .select(`
-        *,
-        supplier:suppliers(name, company_name, email),
-        items:purchase_order_items(*, variant:product_variants(name, sku))
-      `)
-      .eq('id', order.id)
-      .single();
-
-    if (fullOrderError) {
-      throw new Error(fullOrderError.message);
-    }
-
-    return fullOrder;
-  }
-
-  async getSupplierPerformance(supplierId: string, period?: { 
-    startDate?: string; 
-    endDate?: string 
-  }) {
-    const startDate = period?.startDate || new Date(new Date().setDate(new Date().getDate() - 90)).toISOString(); // Last 90 days
-    const endDate = period?.endDate || new Date().toISOString();
-
-    // Get supplier orders in the period
-    const { data: orders, error: ordersError } = await this.supabaseService.getClient()
+  /**
+   * Get purchase orders by supplier
+   */
+  async getPurchaseOrdersBySupplier(supplierId: string): Promise<PurchaseOrder[]> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
       .from('purchase_orders')
       .select('*')
       .eq('supplier_id', supplierId)
-      .gte('created_at', startDate)
-      .lte('created_at', endDate);
-
-    if (ordersError) {
-      throw new Error(ordersError.message);
-    }
-
-    // Calculate performance metrics
-    const totalOrders = orders.length;
-    const totalSpent = orders.reduce((sum, order) => sum + order.total_amount, 0);
-    const completedOrders = orders.filter(order => order.status === 'delivered').length;
-    const onTimeDeliveryRate = totalOrders > 0 ? (completedOrders / totalOrders) * 100 : 0;
-
-    // Get rating from reviews (if available)
-    const { data: reviews, error: reviewsError } = await this.supabaseService.getClient()
-      .from('supplier_reviews')
-      .select('rating')
-      .eq('supplier_id', supplierId)
-      .gte('created_at', startDate)
-      .lte('created_at', endDate);
-
-    const avgRating = reviews && reviews.length > 0 
-      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
-      : 0;
-
-    return {
-      supplierId,
-      period: { startDate, endDate },
-      metrics: {
-        totalOrders,
-        totalSpent,
-        completedOrders,
-        onTimeDeliveryRate: parseFloat(onTimeDeliveryRate.toFixed(2)),
-        avgRating: parseFloat(avgRating.toFixed(2)),
-        avgOrderValue: totalOrders > 0 ? parseFloat((totalSpent / totalOrders).toFixed(2)) : 0,
-      },
-      orders,
-    };
-  }
-
-  async addSupplierReview(reviewData: {
-    supplierId: string;
-    userId: string;
-    rating: number;
-    comment?: string;
-  }) {
-    const { data, error } = await this.supabaseService.getClient()
-      .from('supplier_reviews')
-      .insert([
-        {
-          supplier_id: reviewData.supplierId,
-          user_id: reviewData.userId,
-          rating: reviewData.rating,
-          comment: reviewData.comment,
-        }
-      ])
-      .select()
-      .single();
+      .order('created_at', { ascending: false });
 
     if (error) {
-      throw new Error(error.message);
+      this.logger.error(`Error fetching POs: ${error.message}`);
+      return [];
     }
-
-    // Update supplier's average rating
-    await this.updateSupplierRating(reviewData.supplierId);
 
     return data;
   }
 
-  private async updateSupplierRating(supplierId: string) {
-    const { data: reviews, error } = await this.supabaseService.getClient()
-      .from('supplier_reviews')
-      .select('rating')
-      .eq('supplier_id', supplierId);
+  /**
+   * Approve purchase order
+   */
+  async approvePurchaseOrder(poId: string): Promise<PurchaseOrder> {
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
+      .from('purchase_orders')
+      .update({
+        status: 'approved',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', poId)
+      .select()
+      .single();
 
-    if (error) {
-      this.logger.error(`Error fetching supplier reviews: ${error.message}`);
+    if (error || !data) {
+      throw new Error(`Purchase order with ID ${poId} not found`);
+    }
+
+    this.logger.log(`Purchase order approved: ${poId}`);
+    return data;
+  }
+
+  /**
+   * Mark PO as received
+   */
+  async receivePurchaseOrder(poId: string, items?: Array<{ id: string; received_quantity: number }>): Promise<PurchaseOrder> {
+    const client = this.supabaseService.getClient();
+
+    // Update PO status
+    const { data: po, error: poError } = await client
+      .from('purchase_orders')
+      .update({
+        status: 'received',
+        actual_delivery_date: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', poId)
+      .select()
+      .single();
+
+    if (poError) {
+      throw new Error(`Purchase order with ID ${poId} not found`);
+    }
+
+    // Update item quantities if provided
+    if (items && items.length > 0) {
+      for (const item of items) {
+        await client
+          .from('purchase_order_items')
+          .update({
+            received_quantity: item.received_quantity,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', item.id);
+      }
+    }
+
+    // Update inventory
+    await this.updateInventoryFromPO(poId);
+
+    this.logger.log(`Purchase order received: ${poId}`);
+    return po;
+  }
+
+  /**
+   * Update inventory from received PO
+   */
+  private async updateInventoryFromPO(poId: string): Promise<void> {
+    const client = this.supabaseService.getClient();
+
+    // Get PO items
+    const { data: items } = await client
+      .from('purchase_order_items')
+      .select('variant_id, received_quantity')
+      .eq('po_id', poId);
+
+    if (!items || items.length === 0) {
       return;
     }
 
-    if (reviews && reviews.length > 0) {
-      const avgRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
-      
-      const { error: updateError } = await this.supabaseService.getClient()
-        .from('suppliers')
-        .update({ rating: avgRating })
-        .eq('id', supplierId);
+    // Update inventory for each item
+    for (const item of items) {
+      const quantity = item.received_quantity || item.received_quantity === 0 
+        ? item.received_quantity 
+        : 0;
 
-      if (updateError) {
-        this.logger.error(`Error updating supplier rating: ${updateError.message}`);
-      }
+      // Update or create inventory record
+      await client.rpc('upsert_inventory_from_po', {
+        p_variant_id: item.variant_id,
+        p_quantity: quantity,
+      });
     }
+
+    this.logger.log(`Inventory updated from PO ${poId}`);
+  }
+
+  /**
+   * Get supplier analytics
+   */
+  async getSupplierAnalytics(supplierId: string): Promise<any> {
+    const client = this.supabaseService.getClient();
+
+    // Get total POs
+    const { count: totalPOs } = await client
+      .from('purchase_orders')
+      .select('*', { count: 'exact', head: true })
+      .eq('supplier_id', supplierId);
+
+    // Get total spend
+    const { data: pos } = await client
+      .from('purchase_orders')
+      .select('total_amount')
+      .eq('supplier_id', supplierId)
+      .eq('status', 'received');
+
+    const totalSpend = pos?.reduce((sum, po) => sum + po.total_amount, 0) || 0;
+
+    // Get average delivery time
+    const { data: deliveredPOs } = await client
+      .from('purchase_orders')
+      .select('expected_delivery_date, actual_delivery_date')
+      .eq('supplier_id', supplierId)
+      .eq('status', 'received')
+      .not('actual_delivery_date', 'is', null);
+
+    let avgDeliveryTime = 0;
+    if (deliveredPOs && deliveredPOs.length > 0) {
+      const deliveryTimes = deliveredPOs.map(po => {
+        const expected = new Date(po.expected_delivery_date).getTime();
+        const actual = new Date(po.actual_delivery_date).getTime();
+        return Math.ceil((actual - expected) / (1000 * 60 * 60 * 24));
+      });
+      avgDeliveryTime = deliveryTimes.reduce((sum, t) => sum + t, 0) / deliveryTimes.length;
+    }
+
+    return {
+      supplier_id: supplierId,
+      totalPOs: totalPOs || 0,
+      totalSpend,
+      avgDeliveryTime: Math.round(avgDeliveryTime),
+      onTimeDeliveryRate: deliveredPOs
+        ? (deliveredPOs.filter(po => {
+            const expected = new Date(po.expected_delivery_date).getTime();
+            const actual = new Date(po.actual_delivery_date).getTime();
+            return actual <= expected;
+          }).length / deliveredPOs.length) * 100
+        : 0,
+    };
+  }
+
+  /**
+   * Get low stock products that need reordering
+   */
+  async getLowStockProducts(): Promise<any[]> {
+    const client = this.supabaseService.getClient();
+    const { data } = await client
+      .from('inventory')
+      .select(`
+        *,
+        variant:product_variants(
+          name,
+          sku,
+          product:products(name)
+        )
+      `)
+      .lt('available_stock', 'reorder_level');
+
+    return data || [];
+  }
+
+  /**
+   * Auto-create PO for low stock items
+   */
+  async autoCreatePurchaseOrders(): Promise<PurchaseOrder[]> {
+    const lowStockItems = await this.getLowStockProducts();
+    
+    if (lowStockItems.length === 0) {
+      return [];
+    }
+
+    // Group by supplier (this would need supplier mapping in real implementation)
+    // For now, create a single PO
+    const poItems = lowStockItems.map(item => ({
+      product_id: item.variant.product_id,
+      variant_id: item.variant.id,
+      quantity: item.reorder_level * 2, // Order 2x reorder level
+      unit_price: 0, // Would need cost price from product
+    }));
+
+    // Get default supplier (first active supplier)
+    const suppliers = await this.getAllSuppliers();
+    if (suppliers.length === 0) {
+      this.logger.warn('No suppliers found for auto-PO creation');
+      return [];
+    }
+
+    const po = await this.createPurchaseOrder({
+      supplier_id: suppliers[0].id,
+      items: poItems,
+      expected_delivery_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+      notes: 'Auto-generated PO for low stock items',
+    });
+
+    return [po];
   }
 }
