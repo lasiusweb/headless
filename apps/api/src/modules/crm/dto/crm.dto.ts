@@ -2,6 +2,10 @@ import { IsString, IsEmail, IsPhoneNumber, IsEnum, IsOptional, IsArray, Validate
 import { Type } from 'class-transformer';
 
 export class AddressDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @IsString()
   @Length(5, 200)
   street: string;
@@ -320,6 +324,10 @@ export class CreateOpportunityDto {
   @IsString()
   owner: string;
 
+  @IsOptional()
+  @IsString()
+  ownerName?: string;
+
   @IsEnum(['lead', 'existing-customer', 'referral', 'other'])
   source: 'lead' | 'existing-customer' | 'referral' | 'other';
 
@@ -343,6 +351,10 @@ export class CreateTaskDto {
 
   @IsString()
   assignedTo: string;
+
+  @IsOptional()
+  @IsString()
+  assignedToName?: string;
 
   @IsEnum(['low', 'medium', 'high', 'critical'])
   priority: 'low' | 'medium' | 'high' | 'critical';

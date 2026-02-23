@@ -1,17 +1,19 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
   Query,
+  Param,
   UseGuards,
   HttpStatus,
   HttpCode,
   Req,
-  Ip
+  Ip,
+  ForbiddenException
 } from '@nestjs/common';
 import { SecurityService } from './security.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -140,9 +142,9 @@ export class SecurityController {
   async logSecurityEvent(
     @Body('eventType') eventType: string,
     @Body('userId') userId: string,
+    @Req() req,
     @Body('details') details?: Record<string, any>,
-    @Ip() ipAddress?: string,
-    @Req() req
+    @Ip() ipAddress?: string
   ) {
     await this.securityService.logSecurityEvent(
       eventType,

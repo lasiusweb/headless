@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
-import { LoggingService } from '../modules/logging/logging.service';
+import { LoggingService, LogLevel } from '../modules/logging/logging.service';
 
 @Catch(EntityNotFoundError)
 export class EntityNotFoundExceptionFilter implements ExceptionFilter {
@@ -21,7 +21,7 @@ export class EntityNotFoundExceptionFilter implements ExceptionFilter {
 
     // Log the exception
     this.loggingService.log(
-      'warn',
+      LogLevel.WARN,
       `Entity not found: ${exception.message}`,
       {
         module: 'EntityNotFoundExceptionFilter',

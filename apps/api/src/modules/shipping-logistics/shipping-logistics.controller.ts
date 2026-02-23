@@ -71,8 +71,8 @@ export class ShippingLogisticsController {
   @ApiResponse({ status: 200, description: 'List of shipments' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getUserShipments(
-    @Query('status') status?: string,
-    @Req() req
+    @Req() req,
+    @Query('status') status?: string
   ) {
     return this.shippingLogisticsService.getShipmentsByUser(req.user.id, status);
   }
@@ -114,8 +114,8 @@ export class ShippingLogisticsController {
   async updateShipmentStatus(
     @Param('id') id: string,
     @Body('status') status: string,
-    @Body('trackingData') trackingData?: any,
-    @Req() req
+    @Req() req,
+    @Body('trackingData') trackingData?: any
   ) {
     return this.shippingLogisticsService.updateShipmentStatus(id, status, trackingData);
   }

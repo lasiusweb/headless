@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidationError } from 'class-validator';
-import { Response as SupabaseResponse } from '@supabase/supabase-js';
 import { LoggingService } from '../modules/logging/logging.service';
 
 @Catch(ValidationError)

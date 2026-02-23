@@ -59,9 +59,9 @@ export class PaymentGatewayController {
   @ApiResponse({ status: 404, description: 'Payment not found' })
   async refundPayment(
     @Param('id') paymentId: string,
+    @Req() req,
     @Body('amount') amount?: number,
-    @Body('reason') reason?: string,
-    @Req() req
+    @Body('reason') reason?: string
   ) {
     return this.paymentGatewayService.refundPayment(paymentId, amount, reason);
   }

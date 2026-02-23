@@ -462,13 +462,10 @@ export class ForecastingService {
       forecastCount: forecasts.length,
     };
   }
-}
-      forecast,
-      historicalData,
-      confidenceInterval: 0.95, // 95% confidence interval
-    };
-  }
 
+  /**
+   * Generate inventory recommendations based on forecast
+   */
   async generateInventoryRecommendations(
     warehouseId?: string,
     options?: {
@@ -476,7 +473,7 @@ export class ForecastingService {
       maxDaysOfStock?: number;
       safetyStockMultiplier?: number;
     }
-  ) {
+  ): Promise<InventoryRecommendation[]> {
     const minDays = options?.minDaysOfStock || 7;
     const maxDays = options?.maxDaysOfStock || 30;
     const safetyMultiplier = options?.safetyStockMultiplier || 1.2;
@@ -633,211 +630,5 @@ export class ForecastingService {
       currentStock: inventory.available_quantity,
       avgDailyDemand: parseFloat(avgDailyDemand.toFixed(2)),
     };
-  }
-
-  private processHistoricalData(orderItems: any[], days: number) {
-    // Group order items by date and calculate daily demand
-    const dailyDemand = new Map<string, number>();
-    
-    orderItems.forEach(item => {
-      const date = new Date(item.order.created_at).toISOString().split('T')[0];
-      const currentDemand = dailyDemand.get(date) || 0;
-      dailyDemand.set(date, currentDemand + item.quantity);
-    });
-
-    // Create an array of daily demand for the specified period
-    const result = [];
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      
-      result.push({
-        date: dateStr,
-        demand: dailyDemand.get(dateStr) || 0,
-      });
-    }
-
-    return result;
-  }
-
-  private applyForecastingAlgorithm(
-    historicalData: Array<{ date: string; demand: number }>,
-    days: number,
-    algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
-    options?: any
-  ) {
-    switch (algorithm) {
-      case 'moving_average':
-        return this.movingAverageForecast(historicalData, days);
-      case 'exponential_smoothing':
-        return this.exponentialSmoothingForecast(historicalData, days, options?.alpha || 0.3);
-      case 'regression':
-        return this.linearRegressionForecast(historicalData, days);
-      default:
-        return this.movingAverageForecast(historicalData, days);
-    }
-  }
-
-  private movingAverageForecast(
-    historicalData: Array<{ date: string; demand: number }>,
-    days: number,
-    windowSize: number = 7
-  ) {
-    const forecast = [];
-    const recentData = historicalData.slice(-windowSize);
-    
-    // Calculate average of recent data
-    const avgDemand = recentData.reduce((sum, item) => sum + item.demand, 0) / recentData.length;
-    
-    for (let i = 1; i <= days; i++) {
-      const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + i);
-      
-      forecast.push({
-        date: futureDate.toISOString().split('T')[0],
-        demand: avgDemand,
-        confidence: 0.8, // 80% confidence for simple moving average
-      });
-    }
-    
-    return forecast;
-  }
-
-  private exponentialSmoothingForecast(
-    historicalData: Array<{ date: string; demand: number }>,
-    days: number,
-    alpha: number = 0.3
-  ) {
-    if (historicalData.length === 0) {
-      return Array.from({ length: days }, (_, i) => ({
-        date: new Date(Date.now() + (i + 1) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        demand: 0,
-        confidence: 0.5,
-      }));
-    }
-
-    // Initialize forecast with first actual value
-    let forecastValue = historicalData[0].demand;
-    
-    // Apply exponential smoothing to historical data
-    for (let i = 1; i < historicalData.length; i++) {
-      forecastValue = alpha * historicalData[i].demand + (1 - alpha) * forecastValue;
-    }
-
-    // Forecast future values
-    const forecast = [];
-    for (let i = 1; i <= days; i++) {
-      const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + i);
-      
-      forecast.push({
-        date: futureDate.toISOString().split('T')[0],
-        demand: forecastValue,
-        confidence: 0.7, // 70% confidence for exponential smoothing
-      });
-    }
-    
-    return forecast;
-  }
-
-  private linearRegressionForecast(
-    historicalData: Array<{ date: string; demand: number }>,
-    days: number
-  ) {
-    // Convert dates to numeric values for regression
-    const xValues = historicalData.map((_, index) => index);
-    const yValues = historicalData.map(item => item.demand);
-    
-    // Calculate regression coefficients
-    const n = xValues.length;
-    const sumX = xValues.reduce((a, b) => a + b, 0);
-    const sumY = yValues.reduce((a, b) => a + b, 0);
-    const sumXY = xValues.reduce((sum, x, i) => sum + x * yValues[i], 0);
-    const sumXX = xValues.reduce((sum, x) => sum + x * x, 0);
-    
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
-    
-    // Generate forecast
-    const forecast = [];
-    for (let i = 1; i <= days; i++) {
-      const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + i);
-      
-      const futureX = xValues[xValues.length - 1] + i;
-      const predictedDemand = slope * futureX + intercept;
-      
-      forecast.push({
-        date: futureDate.toISOString().split('T')[0],
-        demand: Math.max(0, predictedDemand), // Ensure non-negative demand
-        confidence: 0.75, // 75% confidence for linear regression
-      });
-    }
-    
-    return forecast;
-  }
-
-  private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
-    const grouped = new Map<string, number>();
-    
-    orderItems.forEach(item => {
-      let periodKey: string;
-      const date = new Date(item.order.created_at);
-      
-      switch (period) {
-        case 'monthly':
-          periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-          break;
-        case 'quarterly':
-          const quarter = Math.floor(date.getMonth() / 3) + 1;
-          periodKey = `${date.getFullYear()}-Q${quarter}`;
-          break;
-        case 'yearly':
-          periodKey = `${date.getFullYear()}`;
-          break;
-        default:
-          periodKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      }
-      
-      const currentTotal = grouped.get(periodKey) || 0;
-      grouped.set(periodKey, currentTotal + item.quantity);
-    });
-    
-    return Array.from(grouped.entries()).map(([period, quantity]) => ({
-      period,
-      quantity,
-    }));
-  }
-
-  private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
-    // Calculate average quantity across all periods
-    const totalQuantity = groupedData.reduce((sum, item) => sum + item.quantity, 0);
-    const avgQuantity = totalQuantity / groupedData.length;
-    
-    // Calculate seasonal index for each period
-    return groupedData.map(item => ({
-      period: item.period,
-      quantity: item.quantity,
-      seasonalIndex: avgQuantity > 0 ? item.quantity / avgQuantity : 0,
-    }));
-  }
-
-  private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
-    // Find periods with highest and lowest seasonal indices
-    const sortedIndices = [...seasonalIndices].sort((a, b) => b.seasonalIndex - a.seasonalIndex);
-    
-    return {
-      peakPeriod: sortedIndices[0]?.period,
-      lowPeriod: sortedIndices[sortedIndices.length - 1]?.period,
-      avgSeasonalIndex: seasonalIndices.reduce((sum, item) => sum + item.seasonalIndex, 0) / seasonalIndices.length,
-      volatility: this.calculateVolatility(seasonalIndices),
-    };
-  }
-
-  private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
-    const avgIndex = indices.reduce((sum, item) => sum + item.seasonalIndex, 0) / indices.length;
-    const variance = indices.reduce((sum, item) => sum + Math.pow(item.seasonalIndex - avgIndex, 2), 0) / indices.length;
-    return Math.sqrt(variance);
   }
 }

@@ -283,7 +283,7 @@ export class CrmService {
       target: createCampaignDto.target,
       achieved: 0, // Initially nothing achieved
       successRate: 0, // Initially 0%
-      channels: createCampaignDto.channels || [createCampaignDto.type],
+      channels: createCampaignDto.channels || [createCampaignDto.type].filter(t => ['email', 'sms', 'whatsapp', 'call', 'direct-mail', 'social-media'].includes(t)) as any,
       attachments: [],
       createdBy: createCampaignDto.createdBy,
       createdByUsername: 'Admin', // In a real app, this would be the user's name
@@ -393,10 +393,9 @@ export class CrmService {
 
   async getRecentActivities(customerId: string, limit: number = 10): Promise<ActivityFeedItem[]> {
     return this.activityFeed
-      .filter(activity => 
+      .filter(activity =>
         (activity.objectType === 'customer' && activity.objectId === customerId) ||
-        (activity.objectType === 'opportunity' && this.opportunities.some(o => o.id === activity.objectId && o.customerId === customerId)) ||
-        (activity.objectType === 'interaction' && this.interactions.some(i => i.id === activity.objectId && i.customerId === customerId))
+        (activity.objectType === 'opportunity' && this.opportunities.some(o => o.id === activity.objectId && o.customerId === customerId))
       )
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, limit);
@@ -418,10 +417,14 @@ export class CrmService {
       name: `${lead.firstName} ${lead.lastName}`,
       email: lead.email,
       phone: lead.phone,
-      type: 'prospect', // Default to prospect, can be updated later
+      type: 'retailer', // Default to retailer
       address: {
         id: Math.random().toString(36).substring(7),
-        ...lead.address,
+        street: lead.address.street,
+        city: lead.address.city,
+        state: lead.address.state,
+        pincode: lead.address.pincode,
+        country: lead.address.country,
         type: 'both',
         isDefault: true,
       },

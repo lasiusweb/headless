@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { api } from './supabase';
+export { usePortalPreference, getPortalPreferenceFromCookie } from './use-portal-preference';
+export type { PortalPreference } from './use-portal-preference';
 
 /**
  * Dashboard Data Hook

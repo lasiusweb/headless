@@ -90,14 +90,24 @@ export class DealersService {
       status: 'rejected',
       rejectedAt: new Date(),
       rejectedBy: adminId,
-      rejectionReason: reason,
+      rejectionReason: reason || null,
       updatedAt: new Date(),
     };
 
     // In a real application, this would trigger an email notification
     this.sendRejectionNotification(this.dealers[index]);
-    
+
     return this.dealers[index];
+  }
+
+  remove(id: string): boolean {
+    const index = this.dealers.findIndex(dealer => dealer.id === id);
+    if (index === -1) {
+      throw new Error(`Dealer with ID ${id} not found`);
+    }
+
+    this.dealers.splice(index, 1);
+    return true;
   }
 
   private sendApprovalNotification(dealer: DealerApplication) {

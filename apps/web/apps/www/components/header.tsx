@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@kn/ui';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, ArrowLeftRight } from 'lucide-react';
+
+// Portal URLs - configurable via environment variables
+const B2C_URL = process.env.NEXT_PUBLIC_B2C_URL || 'https://agriculture.knbiosciences.in';
+const LANDING_URL = process.env.NEXT_PUBLIC_LANDING_URL || 'https://knbiosciences.in';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,7 +22,7 @@ export const Header = () => {
               <span className="text-2xl font-bold text-gray-900">Sciences</span>
             </Link>
           </div>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex md:items-center md:space-x-8">
             <Link href="/" className="text-gray-700 hover:text-green-600">Home</Link>
@@ -27,8 +31,18 @@ export const Header = () => {
             <Link href="/about" className="text-gray-700 hover:text-green-600">About</Link>
             <Link href="/contact" className="text-gray-700 hover:text-green-600">Contact</Link>
           </nav>
-          
-          <div className="flex items-center">
+
+          <div className="flex items-center space-x-2">
+            {/* Portal Switcher */}
+            <Link
+              href={B2C_URL}
+              className="hidden md:flex items-center px-3 py-2 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+              title="Switch to B2C Farmer Portal"
+            >
+              <ArrowLeftRight className="h-4 w-4 mr-2" />
+              Switch to Farmer Portal
+            </Link>
+            
             <Link href="/cart">
               <Button variant="ghost" size="icon">
                 <ShoppingBag className="h-6 w-6" />
@@ -42,7 +56,7 @@ export const Header = () => {
               <Button className="ml-2 hidden sm:block">Become Dealer</Button>
             </Link>
           </div>
-          
+
           {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
             <button
@@ -54,7 +68,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="md:hidden">
@@ -64,6 +78,18 @@ export const Header = () => {
             <Link href="/dealer/pricing" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600">Wholesale Pricing</Link>
             <Link href="/about" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600">About</Link>
             <Link href="/contact" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600">Contact</Link>
+            
+            {/* Mobile Portal Switcher */}
+            <div className="pt-4 pb-2 border-t border-gray-200 mt-2">
+              <Link
+                href={B2C_URL}
+                className="block px-3 py-2 text-sm text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md"
+              >
+                <ArrowLeftRight className="h-4 w-4 inline mr-2" />
+                Switch to Farmer Portal (B2C)
+              </Link>
+            </div>
+            
             <div className="pt-4 pb-3 border-t border-gray-200">
               <div className="flex items-center px-5">
                 <Link href="/auth/login">

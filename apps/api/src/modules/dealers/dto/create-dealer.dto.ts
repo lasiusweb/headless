@@ -79,7 +79,7 @@ export class CreateDealerDto {
   incorporationDate: string;  // ISO date string
 
   @IsEnum(['proprietorship', 'partnership', 'pvt-ltd', 'public-ltd', 'llp', 'trust', 'ngo'])
-  businessType: string;
+  businessType: 'proprietorship' | 'partnership' | 'pvt-ltd' | 'public-ltd' | 'llp' | 'trust' | 'ngo';
 
   @ValidateNested()
   @Type(() => AddressDto)

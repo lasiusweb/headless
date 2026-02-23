@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=http://localhost:3000,http://localhost:3001,http://localhost:3002
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./packages:/app/packages
+    depends_on:
+      - redis
+    networks:
+      - kn-network
+
+  # Landing Page
+  landing:
+    build:
+      context: .
+      dockerfile: apps/web/apps/landing/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      - NEXT_PUBLIC_B2B_URL=http://localhost:3001
+      - NEXT_PUBLIC_B2C_URL=http://localhost:3002
+      - NEXT_PUBLIC_LANDING_URL=http://localhost:3000
+      - NEXT_PUBLIC_COOKIE_DOMAIN=localhost
+    volumes:
+      - ./apps/web/apps/landing:/app/apps/web/apps/landing
+      - ./apps/web/packages:/app/apps/web/packages
+    networks:
+      - kn-network
+
+  # B2B Portal (WWW)
+  b2b:
+    build:
+      context: .
+      dockerfile: apps/web/apps/www/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      - NEXT_PUBLIC_B2B_URL=http://localhost:3001
+      - NEXT_PUBLIC_B2C_URL=http://localhost:3002
+      - NEXT_PUBLIC_LANDING_URL=http://localhost:3000
+    volumes:
+      - ./apps/web/apps/www:/app/apps/web/apps/www
+      - ./apps/web/packages:/app/apps/web/packages
+    networks:
+      - kn-network
+
+  # B2C Portal (Agriculture)
+  b2c:
+    build:
+      context: .
+      dockerfile: apps/web/apps/agriculture/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      - NEXT_PUBLIC_B2B_URL=http://localhost:3001
+      - NEXT_PUBLIC_B2C_URL=http://localhost:3002
+      - NEXT_PUBLIC_LANDING_URL=http://localhost:3000
+    volumes:
+      - ./apps/web/apps/agriculture:/app/apps/web/apps/agriculture
+      - ./apps/web/packages:/app/apps/web/packages
+    networks:
+      - kn-network
+
+  # Redis (for caching)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - kn-network
+
+  # PostgreSQL (for local development without Supabase)
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kn_biosciences
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - kn-network
+
+networks:
+  kn-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

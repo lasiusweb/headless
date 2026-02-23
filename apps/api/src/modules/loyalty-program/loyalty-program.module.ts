@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { LoyaltyProgramService } from './loyalty-program.service';
-import { LoyaltyProgramController } from './loyalty-program.controller';
+import { LoyaltyController } from './loyalty-program.controller';
 import { OrdersModule } from '../orders/orders.module';
 import { CustomersModule } from '../customers/customers.module';
 import { ConfigModule } from '@nestjs/config';
@@ -11,7 +11,7 @@ import { ConfigModule } from '@nestjs/config';
     CustomersModule,
     ConfigModule,
   ],
-  controllers: [LoyaltyProgramController],
+  controllers: [LoyaltyController],
   providers: [LoyaltyProgramService],
   exports: [LoyaltyProgramService],
 })

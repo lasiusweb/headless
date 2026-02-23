@@ -94,10 +94,10 @@ export class DealerApplicationController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Dealer application not found' })
   async updateStatus(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body('status') status: string,
-    @Body('rejectionReason') rejectionReason?: string,
-    @Req() req
+    @Req() req,
+    @Body('rejectionReason') rejectionReason?: string
   ) {
     return this.dealerApplicationService.updateStatus(id, status, req.user.id, rejectionReason);
   }

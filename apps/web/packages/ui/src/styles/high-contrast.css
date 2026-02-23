@@ -1,0 +1,154 @@
+/**
+ * High Contrast Mode Styles
+ * 
+ * WCAG AAA compliant contrast ratios for outdoor readability
+ * Minimum contrast ratio: 7:1 for normal text, 4.5:1 for large text
+ */
+
+/* High Contrast Mode Base Styles */
+.high-contrast {
+  /* Force high contrast colors */
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #00ffff;
+  --secondary-foreground: #000000;
+  --accent: #ff00ff;
+  --accent-foreground: #000000;
+  --muted: #333333;
+  --muted-foreground: #ffffff;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #ffffff;
+  --ring: #ffff00;
+  
+  /* Apply to all elements */
+  * {
+    border-color: #ffffff !important;
+  }
+  
+  /* Text elements */
+  p, h1, h2, h3, h4, h5, h6, span, label, a {
+    color: #ffffff !important;
+  }
+  
+  /* Links */
+  a {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+  }
+  
+  /* Buttons */
+  button, [role="button"] {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+    border: 2px solid #ffffff !important;
+    font-weight: bold !important;
+  }
+  
+  /* Input fields */
+  input, textarea, select {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+  }
+  
+  /* Cards and containers */
+  .card, [role="region"] {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+  }
+  
+  /* Images - add borders for visibility */
+  img {
+    border: 2px solid #ffffff !important;
+  }
+  
+  /* Focus states - extra visible */
+  :focus, :focus-visible {
+    outline: 3px solid #ffff00 !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* High contrast mode for light backgrounds */
+.high-contrast-light {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #0000ff;
+  --primary-foreground: #ffffff;
+  --secondary: #008000;
+  --secondary-foreground: #ffffff;
+  --accent: #800080;
+  --accent-foreground: #ffffff;
+  --muted: #cccccc;
+  --muted-foreground: #000000;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #000000;
+  --input: #000000;
+  --ring: #0000ff;
+  
+  * {
+    border-color: #000000 !important;
+  }
+  
+  p, h1, h2, h3, h4, h5, h6, span, label, a {
+    color: #000000 !important;
+  }
+  
+  a {
+    color: #0000ff !important;
+    text-decoration: underline !important;
+  }
+  
+  button, [role="button"] {
+    background-color: #0000ff !important;
+    color: #ffffff !important;
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
+  }
+  
+  input, textarea, select {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+  }
+  
+  .card, [role="region"] {
+    background-color: #ffffff !important;
+    border: 2px solid #000000 !important;
+  }
+  
+  img {
+    border: 2px solid #000000 !important;
+  }
+  
+  :focus, :focus-visible {
+    outline: 3px solid #0000ff !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .high-contrast-toggle,
+  [aria-label*="contrast"],
+  button:not([aria-label*="print"]) {
+    display: none !important;
+  }
+}

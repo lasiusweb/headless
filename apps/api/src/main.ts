@@ -4,8 +4,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { LoggingService } from './modules/logging/logging.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { validateEnv } from './config/env.schema';
 
 async function bootstrap() {
+  // Validate environment variables before starting
+  try {
+    validateEnv();
+  } catch (error: any) {
+    console.error('❌ Environment validation failed:');
+    console.error(error.message);
+    process.exit(1);
+  }
+
   const app = await NestFactory.create(AppModule);
 
   // Get the logging service instance to use in global setup

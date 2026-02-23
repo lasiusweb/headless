@@ -373,8 +373,8 @@ export class OrderService {
     }
 
     // Determine if all required approvals are done
-    const allRequiredApproved = allApprovals.every(appr => apr.status === 'approved');
-    const anyRejected = allApprovals.some(appr => apr.status === 'rejected');
+    const allRequiredApproved = allApprovals.every(appr => appr.status === 'approved');
+    const anyRejected = allApprovals.some(appr => appr.status === 'rejected');
 
     if (anyRejected) {
       // If any approval is rejected, reject the entire order

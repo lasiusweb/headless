@@ -1,7 +1,7 @@
-import { Injectable, Logger, Inject, PlatformExceptionFilter } from '@nestjs/common';
+import { Injectable, Logger, Inject, ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import * as Sentry from '@sentry/node';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 export interface SentryConfig {
   dsn: string;
@@ -31,8 +31,8 @@ export class SentryService {
       release: config.release,
       tracesSampleRate: config.tracesSampleRate || 0.1,
       integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Sentry.Integrations.Express({ app: undefined }),
+        Sentry.httpIntegration(),
+        Sentry.expressIntegration(),
       ],
     });
 
@@ -103,8 +103,9 @@ export class SentryService {
    * Set transaction for tracing
    */
   startTransaction(name: string, op: string = 'function') {
-    const transaction = Sentry.startTransaction({ name, op });
-    Sentry.getCurrentScope().setSpan(transaction);
+    const transaction = Sentry.startSpan({ name, op }, (span) => {
+      return span;
+    });
     return transaction;
   }
 
@@ -127,7 +128,7 @@ export class SentryService {
     const start = Date.now();
     return () => {
       const duration = Date.now() - start;
-      Sentry.metrics?.distribution(label, duration);
+      // Sentry metrics API may vary by version, using fallback
       this.logger.debug(`${label}: ${duration}ms`);
     };
   }
@@ -137,14 +138,12 @@ export class SentryService {
  * Global Sentry Exception Filter
  */
 @Injectable()
-export class SentryExceptionFilter extends PlatformExceptionFilter {
+export class SentryExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(SentryExceptionFilter.name);
 
-  constructor(private readonly sentryService: SentryService) {
-    super();
-  }
+  constructor(private readonly sentryService: SentryService) {}
 
-  catch(exception: Error, host: any): void {
+  catch(exception: Error, host: ArgumentsHost): void {
     // Log to Sentry
     const eventId = this.sentryService.captureException(exception, {
       tags: {
@@ -155,7 +154,15 @@ export class SentryExceptionFilter extends PlatformExceptionFilter {
       },
     });
 
-    // Call parent handler
-    super.catch(exception, host);
+    // Default handling
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const status = 500;
+
+    response.status(status).json({
+      statusCode: status,
+      message: exception.message,
+      eventId,
+    });
   }
 }

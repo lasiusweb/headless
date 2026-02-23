@@ -1,5 +1,42 @@
 # KN Biosciences Headless E-Commerce Platform
 
+## B2B/D2C Portal Routing
+
+The platform features an intelligent routing system that directs users to the appropriate portal based on their role and preferences:
+
+### User Types & Routing
+
+| Role | Portal | URL | Discount |
+|------|--------|-----|----------|
+| `dealer` | B2B | www.knbiosciences.in | 40% off MRP |
+| `distributor` | B2B | www.knbiosciences.in | 55% off MRP |
+| `retailer` | B2C | agriculture.knbiosciences.in | Retail pricing |
+| `customer` | B2C | agriculture.knbiosciences.in | Retail pricing |
+| `farmer` | B2C | agriculture.knbiosciences.in | Retail pricing |
+| `admin` | Admin | admin.knbiosciences.in | N/A |
+
+### How It Works
+
+1. **First-time visitors** see a landing page with two options:
+   - "I'm a Dealer" → B2B Portal
+   - "I'm a Farmer" → B2C Portal
+
+2. **Returning guests** are auto-redirected based on stored preference (cookie)
+
+3. **Authenticated users** are auto-redirected based on their role from JWT token
+
+### Features
+
+- **Smart Middleware**: Edge-based routing with JWT validation
+- **Help Modal**: "Which Portal?" comparison table and FAQ
+- **Portal Switcher**: Links in both portals to switch between B2B/B2C
+- **Analytics**: Tracks portal selection and auto-redirect events
+- **Accessibility**: Keyboard navigation, ARIA labels, focus states
+
+For detailed implementation, see `B2B_D2C_ROUTING_IMPROVEMENTS.md`.
+
+---
+
 ## Deployment Guide
 
 ### Prerequisites
@@ -45,7 +82,7 @@ TWILIO_AUTH_TOKEN=your-twilio-token
 TWILIO_WHATSAPP_NUMBER=+14155238886
 
 # CORS
-CORS_ORIGIN=https://www.knbiosciences.in,https://agriculture.knbiosciences.in
+CORS_ORIGIN=https://knbiosciences.in,https://www.knbiosciences.in,https://agriculture.knbiosciences.in,https://admin.knbiosciences.in
 
 # Server
 PORT=3000
@@ -60,6 +97,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 NEXT_PUBLIC_API_URL=https://api.knbiosciences.in
 ```
 
+#### Landing Page (`apps/web/apps/landing/.env`)
+
+```bash
+NEXT_PUBLIC_B2B_URL=https://www.knbiosciences.in
+NEXT_PUBLIC_B2C_URL=https://agriculture.knbiosciences.in
+NEXT_PUBLIC_LANDING_URL=https://knbiosciences.in
+```
+
 ### Local Development
 
 ```bash
@@ -70,8 +115,9 @@ pnpm install
 pnpm run dev
 
 # Access services
-# API: http://localhost:3000
-# API Docs: http://localhost:3000/api
+# Landing Page: http://localhost:3000
+# API: http://localhost:3001/api
+# API Docs: http://localhost:3001/api
 # WWW (B2B): http://localhost:3001
 # Agriculture (B2C): http://localhost:3002
 # Admin: http://localhost:3003
@@ -237,8 +283,9 @@ Authorization: Bearer <your-jwt-token>
 ┌─────────────────────────────────────────────────────────────┐
 │                     Client Applications                      │
 ├──────────────┬──────────────┬──────────────┬────────────────┤
-│   B2B Web    │   B2C Web    │   Admin      │   Mobile POS   │
-│   (Next.js)  │   (Next.js)  │   (Next.js)  │   (Flutter)    │
+│   Landing    │   B2B Web    │   B2C Web    │   Admin       │
+│   (Next.js)  │   (Next.js)  │   (Next.js)  │   (Next.js)   │
+│   Entry Point│   Dealer     │   Farmer     │   Dashboard   │
 └──────┬───────┴──────┬───────┴──────┬───────┴───────┬────────┘
        │              │              │               │
        └──────────────┴──────┬───────┴───────────────┘
@@ -335,6 +382,44 @@ apps/api/src/modules/
 - [x] Demand forecasting
 - [x] Inventory recommendations
 - [x] Admin dashboard
+
+### Phase 12: Unified Landing & Routing ✅
+- [x] Landing page with dual-path CTAs
+- [x] Smart middleware routing
+- [x] User preference persistence
+- [x] Role-based auto-redirect
+- [x] SEO optimization
+
+---
+
+## B2B/D2C Portal Routing
+
+The platform features a unified landing page that intelligently routes users to the appropriate portal:
+
+### User Types & Routing
+
+| User Type | Role | Portal | URL |
+|-----------|------|--------|-----|
+| Dealer | `dealer` | B2B | www.knbiosciences.in |
+| Distributor | `distributor` | B2B | www.knbiosciences.in |
+| Farmer | `retailer` | B2C | agriculture.knbiosciences.in |
+| Retail Customer | `customer` | B2C | agriculture.knbiosciences.in |
+
+### How It Works
+
+1. **First-time visitors** see a landing page with two options:
+   - "I'm a Dealer" → B2B Portal
+   - "I'm a Farmer" → B2C Portal
+
+2. **Returning guests** are auto-redirected based on stored preference (cookie)
+
+3. **Authenticated users** are auto-redirected based on their role
+
+### Documentation
+
+For detailed implementation details, see:
+- `apps/web/apps/landing/README.md` - Landing page documentation
+- `IMPLEMENTATION_SUMMARY.md` - Complete implementation summary
 
 ---
 

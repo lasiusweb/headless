@@ -10,7 +10,8 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
-  Req
+  Req,
+  ForbiddenException
 } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -51,12 +52,12 @@ export class NotificationController {
   @ApiResponse({ status: 200, description: 'List of notifications retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findAll(
+    @Req() req,
     @Query('type') type?: string,
     @Query('isRead') isRead?: string,
     @Query('priority') priority?: string,
     @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
-    @Req() req
+    @Query('offset') offset?: string
   ) {
     return this.notificationService.findAll(req.user.id, {
       type,
@@ -122,8 +123,8 @@ export class NotificationController {
   @ApiResponse({ status: 200, description: 'Notifications marked as read successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async markAllAsRead(
-    @Query('type') type?: string,
-    @Req() req
+    @Req() req,
+    @Query('type') type?: string
   ) {
     return this.notificationService.markAllAsRead(req.user.id, type);
   }
@@ -237,15 +238,15 @@ export class NotificationController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   async getDealerPerformanceNotifications(
+    @Req() req,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-    @Query('dealerId') dealerId?: string,
-    @Req() req
+    @Query('dealerId') dealerId?: string
   ) {
     if (req.user.role !== 'admin') {
       throw new ForbiddenException('Only admins can access dealer performance reports');
     }
-    
+
     return this.notificationService.getDealerPerformanceNotifications({
       startDate,
       endDate,
@@ -264,15 +265,15 @@ export class NotificationController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   async getDistributorPerformanceNotifications(
+    @Req() req,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
-    @Query('distributorId') distributorId?: string,
-    @Req() req
+    @Query('distributorId') distributorId?: string
   ) {
     if (req.user.role !== 'admin') {
       throw new ForbiddenException('Only admins can access distributor performance reports');
     }
-    
+
     return this.notificationService.getDistributorPerformanceNotifications({
       startDate,
       endDate,

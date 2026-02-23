@@ -76,6 +76,7 @@ export class InvoicesService {
       igst: gstBreakup.igstAmount,
       taxAmount: gstBreakup.totalGstAmount,
       total,
+      currency: 'INR', // Default to Indian Rupee
       invoiceDate: new Date(createInvoiceDto.invoiceDate),
       dueDate: new Date(createInvoiceDto.dueDate),
       status: 'generated',
@@ -156,6 +157,9 @@ export class InvoicesService {
     this.invoices[index] = {
       ...this.invoices[index],
       ...updateInvoiceDto,
+      sentAt: updateInvoiceDto.sentAt ? new Date(updateInvoiceDto.sentAt) : this.invoices[index].sentAt,
+      paidAt: updateInvoiceDto.paidAt ? new Date(updateInvoiceDto.paidAt) : this.invoices[index].paidAt,
+      cancelledAt: updateInvoiceDto.cancelledAt ? new Date(updateInvoiceDto.cancelledAt) : this.invoices[index].cancelledAt,
       updatedAt: new Date(),
     };
 

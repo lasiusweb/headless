@@ -1,12 +1,18 @@
 import { IsString, IsNumber, IsEnum, IsOptional, IsArray, ValidateNested, Min, Max, IsISO8601, IsEmail } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class ReportFilterDto {
+export class DateRangeDto {
   @IsISO8601()
   startDate: string;
 
   @IsISO8601()
   endDate: string;
+}
+
+export class ReportFilterDto {
+  @ValidateNested()
+  @Type(() => DateRangeDto)
+  dateRange: DateRangeDto;
 
   @IsOptional()
   @IsArray()

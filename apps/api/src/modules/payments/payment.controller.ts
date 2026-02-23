@@ -64,9 +64,9 @@ export class PaymentController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   async refundPayment(
     @Body('paymentId') paymentId: string,
+    @Req() req,
     @Body('amount') amount?: number,
-    @Body('reason') reason?: string,
-    @Req() req
+    @Body('reason') reason?: string
   ) {
     return this.paymentService.refundPayment(paymentId, amount, reason);
   }

@@ -1,0 +1,1846 @@
+
+> api@0.0.1 build F:\code\headless\apps\api
+> nest build
+
+[96msrc/filters/entity-not-found.exception-filter.ts[0m:[93m24[0m:[93m7[0m - [91merror[0m[90m TS2345: [0mArgument of type '"warn"' is not assignable to parameter of type 'LogLevel'.
+
+[7m24[0m       'warn',
+[7m  [0m [91m      ~~~~~~[0m
+[96msrc/filters/validation.exception-filter.ts[0m:[93m10[0m:[93m10[0m - [91merror[0m[90m TS2305: [0mModule '"@supabase/supabase-js"' has no exported member 'Response'.
+
+[7m10[0m import { Response as SupabaseResponse } from '@supabase/supabase-js';
+[7m  [0m [91m         ~~~~~~~~[0m
+[96msrc/modules/analytics/analytics.module.ts[0m:[93m6[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.module' or its corresponding type declarations.
+
+[7m6[0m import { CustomersModule } from '../customers/customers.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/analytics/analytics.service.ts[0m:[93m19[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.service' or its corresponding type declarations.
+
+[7m19[0m import { CustomersService } from '../customers/customers.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/analytics/analytics.service.ts[0m:[93m259[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ createdAt: Date; updatedAt: Date; title: string; type: "sales" | "customer" | "inventory" | "financial" | "custom"; description: string; filters: ReportFilterDto; schedule: ReportScheduleDto; recipients: string[]; status: "active" | "inactive" | "scheduled"; id: string; }' is not assignable to type 'Report'.
+  Types of property 'filters' are incompatible.
+    Property 'dateRange' is missing in type 'ReportFilterDto' but required in type 'ReportFilter'.
+
+[7m259[0m     const report: Report = {
+[7m   [0m [91m          ~~~~~~[0m
+
+  [96msrc/modules/analytics/interfaces/analytics.interface.ts[0m:[93m123[0m:[93m3[0m
+    [7m123[0m   dateRange: {
+    [7m   [0m [96m  ~~~~~~~~~[0m
+    'dateRange' is declared here.
+[96msrc/modules/analytics/analytics.service.ts[0m:[93m279[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType '{ updatedAt: Date; title: string; description: string; filters: ReportFilter | ReportFilterDto; schedule: ReportSchedule; ... 6 more ...; createdAt: Date; }' is not assignable to type 'Report'.
+  Types of property 'filters' are incompatible.
+    Type 'ReportFilter | ReportFilterDto' is not assignable to type 'ReportFilter'.
+      Property 'dateRange' is missing in type 'ReportFilterDto' but required in type 'ReportFilter'.
+
+[7m279[0m     this.reports[index] = {
+[7m   [0m [91m    ~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/analytics/interfaces/analytics.interface.ts[0m:[93m123[0m:[93m3[0m
+    [7m123[0m   dateRange: {
+    [7m   [0m [96m  ~~~~~~~~~[0m
+    'dateRange' is declared here.
+[96msrc/modules/auth/auth.module.ts[0m:[93m15[0m:[93m22[0m - [91merror[0m[90m TS2322: [0mType 'string' is not assignable to type 'number | StringValue | undefined'.
+
+[7m15[0m       signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '60m' },
+[7m  [0m [91m                     ~~~~~~~~~[0m
+[96msrc/modules/auth/auth.service.ts[0m:[93m24[0m:[93m13[0m - [91merror[0m[90m TS2339: [0mProperty 'password' does not exist on type 'User'.
+
+[7m24[0m     const { password: _, ...result } = data.user;
+[7m  [0m [91m            ~~~~~~~~[0m
+[96msrc/modules/auth/auth.service.ts[0m:[93m61[0m:[93m13[0m - [91merror[0m[90m TS2339: [0mProperty 'password' does not exist on type 'User | null'.
+
+[7m61[0m     const { password: _, ...user } = data.user;
+[7m  [0m [91m            ~~~~~~~~[0m
+[96msrc/modules/caching/cache.module.ts[0m:[93m3[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module './cache.controller' or its corresponding type declarations.
+
+[7m3[0m import { CacheController } from './cache.controller';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/caching/cache.service.ts[0m:[93m13[0m:[93m50[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m13[0m     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+[7m  [0m [91m                                                 ~~~~~[0m
+
+  [96msrc/modules/caching/cache.service.ts[0m:[93m3[0m:[93m10[0m
+    [7m3[0m import { Cache } from 'cache-manager';
+    [7m [0m [96m         ~~~~~[0m
+    'Cache' was imported here.
+[96msrc/modules/caching/cache.service.ts[0m:[93m67[0m:[93m31[0m - [91merror[0m[90m TS2551: [0mProperty 'reset' does not exist on type 'Cache'. Did you mean 'set'?
+
+[7m67[0m       await this.cacheManager.reset();
+[7m  [0m [91m                              ~~~~~[0m
+
+  [96m../../node_modules/.pnpm/cache-manager@6.4.3/node_modules/cache-manager/dist/index.d.cts[0m:[93m54[0m:[93m5[0m
+    [7m54[0m     set: <T>(key: string, value: T, ttl?: number) => Promise<T>;
+    [7m  [0m [96m    ~~~[0m
+    'set' is declared here.
+[96msrc/modules/crm/crm.module.ts[0m:[93m5[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.module' or its corresponding type declarations.
+
+[7m5[0m import { CustomersModule } from '../customers/customers.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/crm/crm.service.ts[0m:[93m24[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.service' or its corresponding type declarations.
+
+[7m24[0m import { CustomersService } from '../customers/customers.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/crm/crm.service.ts[0m:[93m46[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ status: "active" | "inactive" | "prospect" | "blacklisted"; pricingTier: "retailer" | "dealer" | "distributor"; totalOrders: number; totalSpent: number; tags: string[]; notes: string[]; ... 16 more ...; id: string; }' is not assignable to type 'Customer'.
+  Types of property 'address' are incompatible.
+    Property 'id' is missing in type 'AddressDto' but required in type 'Address'.
+
+[7m46[0m     const customer: Customer = {
+[7m  [0m [91m          ~~~~~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m33[0m:[93m3[0m
+    [7m33[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96msrc/modules/crm/crm.service.ts[0m:[93m86[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType '{ updatedAt: Date; name: string; email: string; phone: string; alternatePhone?: string; type: "retailer" | "dealer" | "distributor"; gstin?: string; pan?: string; creditLimit?: number; ... 18 more ...; createdAt: Date; }' is not assignable to type 'Customer'.
+  Types of property 'address' are incompatible.
+    Property 'id' is missing in type 'AddressDto' but required in type 'Address'.
+
+[7m86[0m     this.customers[index] = {
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m33[0m:[93m3[0m
+    [7m33[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96msrc/modules/crm/crm.service.ts[0m:[93m217[0m:[93m11[0m - [91merror[0m[90m TS2741: [0mProperty 'ownerName' is missing in type '{ expectedCloseDate: Date | undefined; productsInterested: string[]; notes: string[]; createdAt: Date; updatedAt: Date; customerId: string; leadId?: string; title: string; ... 6 more ...; id: string; }' but required in type 'Opportunity'.
+
+[7m217[0m     const opportunity: Opportunity = {
+[7m   [0m [91m          ~~~~~~~~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m96[0m:[93m3[0m
+    [7m96[0m   ownerName: string;
+    [7m  [0m [96m  ~~~~~~~~~[0m
+    'ownerName' is declared here.
+[96msrc/modules/crm/crm.service.ts[0m:[93m248[0m:[93m11[0m - [91merror[0m[90m TS2741: [0mProperty 'assignedToName' is missing in type '{ dueDate: Date | undefined; createdAt: Date; updatedAt: Date; title: string; description: string; assignedTo: string; priority: "low" | "medium" | "high" | "critical"; status: "pending" | "in-progress" | "completed" | "cancelled"; relatedTo: "customer" | "lead" | "opportunity" | "order" | "other"; relatedId: string...' but required in type 'Task'.
+
+[7m248[0m     const task: Task = {
+[7m   [0m [91m          ~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m109[0m:[93m3[0m
+    [7m109[0m   assignedToName: string;
+    [7m   [0m [96m  ~~~~~~~~~~~~~~[0m
+    'assignedToName' is declared here.
+[96msrc/modules/crm/crm.service.ts[0m:[93m286[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType '("email" | "sms" | "whatsapp" | "event" | "call" | "other" | "social-media" | "direct-mail")[]' is not assignable to type '("email" | "sms" | "whatsapp" | "call" | "social-media" | "direct-mail")[]'.
+  Type '"email" | "sms" | "whatsapp" | "event" | "call" | "other" | "social-media" | "direct-mail"' is not assignable to type '"email" | "sms" | "whatsapp" | "call" | "social-media" | "direct-mail"'.
+    Type '"event"' is not assignable to type '"email" | "sms" | "whatsapp" | "call" | "social-media" | "direct-mail"'.
+
+[7m286[0m       channels: createCampaignDto.channels || [createCampaignDto.type],
+[7m   [0m [91m      ~~~~~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m134[0m:[93m3[0m
+    [7m134[0m   channels: ('email' | 'sms' | 'whatsapp' | 'call' | 'direct-mail' | 'social-media')[];
+    [7m   [0m [96m  ~~~~~~~~[0m
+    The expected type comes from property 'channels' which is declared here on type 'Campaign'
+[96msrc/modules/crm/crm.service.ts[0m:[93m399[0m:[93m10[0m - [91merror[0m[90m TS2367: [0mThis comparison appears to be unintentional because the types '"customer" | "lead" | "opportunity" | "task" | "campaign"' and '"interaction"' have no overlap.
+
+[7m399[0m         (activity.objectType === 'interaction' && this.interactions.some(i => i.id === activity.objectId && i.customerId === customerId))
+[7m   [0m [91m         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/crm/crm.service.ts[0m:[93m421[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType '"prospect"' is not assignable to type '"retailer" | "dealer" | "distributor"'.
+
+[7m421[0m       type: 'prospect', // Default to prospect, can be updated later
+[7m   [0m [91m      ~~~~[0m
+
+  [96msrc/modules/crm/interfaces/crm.interface.ts[0m:[93m7[0m:[93m3[0m
+    [7m7[0m   type: 'retailer' | 'dealer' | 'distributor';
+    [7m [0m [96m  ~~~~[0m
+    The expected type comes from property 'type' which is declared here on type 'Customer'
+[96msrc/modules/crm/crm.service.ts[0m:[93m423[0m:[93m9[0m - [91merror[0m[90m TS2783: [0m'id' is specified more than once, so this usage will be overwritten.
+
+[7m423[0m         id: Math.random().toString(36).substring(7),
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/crm/crm.service.ts[0m:[93m424[0m:[93m9[0m
+    [7m424[0m         ...lead.address,
+    [7m   [0m [96m        ~~~~~~~~~~~~~~~[0m
+    This spread always overwrites this property.
+[96msrc/modules/dealer-applications/dealer-application.controller.ts[0m:[93m100[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m100[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/dealers/dealers.controller.ts[0m:[93m50[0m:[93m32[0m - [91merror[0m[90m TS2339: [0mProperty 'remove' does not exist on type 'DealersService'.
+
+[7m50[0m     return this.dealersService.remove(id);
+[7m  [0m [91m                               ~~~~~~[0m
+[96msrc/modules/dealers/dealers.service.ts[0m:[93m14[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ status: "pending"; createdAt: Date; updatedAt: Date; approvedAt: null; approvedBy: null; rejectedAt: null; rejectedBy: null; rejectionReason: null; businessName: string; gstNumber: string; ... 10 more ...; id: string; }' is not assignable to type 'DealerApplication'.
+  Types of property 'businessType' are incompatible.
+    Type 'string' is not assignable to type '"proprietorship" | "partnership" | "pvt-ltd" | "public-ltd" | "llp" | "trust" | "ngo"'.
+
+[7m14[0m     const newDealer: DealerApplication = {
+[7m  [0m [91m          ~~~~~~~~~[0m
+[96msrc/modules/dealers/dealers.service.ts[0m:[93m36[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'DealerApplication | undefined' is not assignable to type 'DealerApplication'.
+  Type 'undefined' is not assignable to type 'DealerApplication'.
+
+[7m36[0m     return this.dealers.find(dealer => dealer.id === id);
+[7m  [0m [91m    ~~~~~~[0m
+[96msrc/modules/dealers/dealers.service.ts[0m:[93m49[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType '{ updatedAt: Date; status: "pending" | "approved" | "rejected" | "under_review"; rejectionReason: string | null; businessName: string; gstNumber: string; panNumber: string; ... 14 more ...; rejectedBy: string | null; }' is not assignable to type 'DealerApplication'.
+  Types of property 'businessType' are incompatible.
+    Type 'string' is not assignable to type '"proprietorship" | "partnership" | "pvt-ltd" | "public-ltd" | "llp" | "trust" | "ngo"'.
+
+[7m49[0m     this.dealers[index] = {
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/dealers/dealers.service.ts[0m:[93m93[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'string | undefined' is not assignable to type 'string | null'.
+  Type 'undefined' is not assignable to type 'string | null'.
+
+[7m93[0m       rejectionReason: reason,
+[7m  [0m [91m      ~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/dealers/interfaces/dealer-application.interface.ts[0m:[93m10[0m:[93m3[0m
+    [7m10[0m   rejectionReason: string | null;
+    [7m  [0m [96m  ~~~~~~~~~~~~~~~[0m
+    The expected type comes from property 'rejectionReason' which is declared here on type 'DealerApplication'
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m36[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType 'ForecastAlgorithm | undefined' is not assignable to type '"moving_average" | "exponential_smoothing" | "linear_regression" | "seasonal" | undefined'.
+  Type 'ForecastAlgorithm.Regression' is not assignable to type '"moving_average" | "exponential_smoothing" | "linear_regression" | "seasonal" | undefined'.
+
+[7m36[0m         algorithm: demandForecastDto.algorithm,
+[7m  [0m [91m        ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m54[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m54[0m     @Param('productId') productId: string,
+[7m  [0m [91m     ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m75[0m:[93m7[0m - [91merror[0m[90m TS2554: [0mExpected 0 arguments, but got 2.
+
+[7m 75[0m       inventoryRecommendationDto.warehouseId,
+[7m   [0m [91m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 76[0m       {
+[7m   [0m [91m~~~~~~~[0m
+[7m...[0m 
+[7m 79[0m         safetyStockMultiplier: inventoryRecommendationDto.safetyStockMultiplier,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 80[0m       }
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m94[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m94[0m     @Param('productId') productId: string,
+[7m  [0m [91m     ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m97[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'getSeasonalTrends' does not exist on type 'ForecastingService'.
+
+[7m97[0m     return this.forecastingService.getSeasonalTrends(productId, period);
+[7m  [0m [91m                                   ~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m110[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m110[0m     @Param('variantId') variantId: string,
+[7m   [0m [91m     ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m113[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'predictRestockDate' does not exist on type 'ForecastingService'.
+
+[7m113[0m     return this.forecastingService.predictRestockDate(variantId, warehouseId);
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m133[0m:[93m7[0m - [91merror[0m[90m TS2554: [0mExpected 0 arguments, but got 2.
+
+[7m133[0m       warehouseId,
+[7m   [0m [91m      ~~~~~~~~~~~~[0m
+[7m134[0m       { minDaysOfStock: daysNum }
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.controller.ts[0m:[93m138[0m:[93m36[0m - [91merror[0m[90m TS2339: [0mProperty 'recommendations' does not exist on type 'InventoryRecommendation[]'.
+
+[7m138[0m     const alerts = recommendations.recommendations
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m466[0m:[93m7[0m - [91merror[0m[90m TS2304: [0mCannot find name 'forecast'.
+
+[7m466[0m       forecast,
+[7m   [0m [91m      ~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m466[0m:[93m7[0m - [91merror[0m[90m TS2695: [0mLeft side of comma operator is unused and has no side effects.
+
+[7m466[0m       forecast,
+[7m   [0m [91m      ~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m466[0m:[93m7[0m - [91merror[0m[90m TS2695: [0mLeft side of comma operator is unused and has no side effects.
+
+[7m466[0m       forecast,
+[7m   [0m [91m      ~~~~~~~~~[0m
+[7m467[0m       historicalData,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m467[0m:[93m7[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m467[0m       historicalData,
+[7m   [0m [91m      ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m468[0m:[93m7[0m - [91merror[0m[90m TS2304: [0mCannot find name 'confidenceInterval'.
+
+[7m468[0m       confidenceInterval: 0.95, // 95% confidence interval
+[7m   [0m [91m      ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m468[0m:[93m25[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m468[0m       confidenceInterval: 0.95, // 95% confidence interval
+[7m   [0m [91m                        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m468[0m:[93m27[0m - [91merror[0m[90m TS2695: [0mLeft side of comma operator is unused and has no side effects.
+
+[7m468[0m       confidenceInterval: 0.95, // 95% confidence interval
+[7m   [0m [91m                          ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m469[0m:[93m5[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m469[0m     };
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m470[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m470[0m   }
+[7m   [0m [91m  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m472[0m:[93m3[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m472[0m   async generateInventoryRecommendations(
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m472[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'async'.
+
+[7m472[0m   async generateInventoryRecommendations(
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m472[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'generateInventoryRecommendations'.
+
+[7m472[0m   async generateInventoryRecommendations(
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m473[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'warehouseId'.
+
+[7m473[0m     warehouseId?: string,
+[7m   [0m [91m    ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m473[0m:[93m17[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m473[0m     warehouseId?: string,
+[7m   [0m [91m                ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m473[0m:[93m19[0m - [91merror[0m[90m TS2693: [0m'string' only refers to a type, but is being used as a value here.
+
+[7m473[0m     warehouseId?: string,
+[7m   [0m [91m                  ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m474[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'options'.
+
+[7m474[0m     options?: {
+[7m   [0m [91m    ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m474[0m:[93m13[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m474[0m     options?: {
+[7m   [0m [91m            ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m475[0m:[93m24[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m475[0m       minDaysOfStock?: number;
+[7m   [0m [91m                       ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m475[0m:[93m30[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m475[0m       minDaysOfStock?: number;
+[7m   [0m [91m                             ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m476[0m:[93m24[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m476[0m       maxDaysOfStock?: number;
+[7m   [0m [91m                       ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m476[0m:[93m30[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m476[0m       maxDaysOfStock?: number;
+[7m   [0m [91m                             ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m477[0m:[93m31[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m477[0m       safetyStockMultiplier?: number;
+[7m   [0m [91m                              ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m477[0m:[93m37[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m477[0m       safetyStockMultiplier?: number;
+[7m   [0m [91m                                    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m479[0m:[93m5[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m479[0m   ) {
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m480[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'options'.
+
+[7m480[0m     const minDays = options?.minDaysOfStock || 7;
+[7m   [0m [91m                    ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m481[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'options'.
+
+[7m481[0m     const maxDays = options?.maxDaysOfStock || 30;
+[7m   [0m [91m                    ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m482[0m:[93m30[0m - [91merror[0m[90m TS2304: [0mCannot find name 'options'.
+
+[7m482[0m     const safetyMultiplier = options?.safetyStockMultiplier || 1.2;
+[7m   [0m [91m                             ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m485[0m:[93m17[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m485[0m     let query = this.supabaseService.getClient()
+[7m   [0m [91m                ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m498[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'warehouseId'.
+
+[7m498[0m     if (warehouseId) {
+[7m   [0m [91m        ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m499[0m:[93m40[0m - [91merror[0m[90m TS2304: [0mCannot find name 'warehouseId'.
+
+[7m499[0m       query = query.eq('warehouse_id', warehouseId);
+[7m   [0m [91m                                       ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m512[0m:[93m30[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m512[0m       const forecast = await this.generateDemandForecast(
+[7m   [0m [91m                             ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m536[0m:[93m28[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ variantId: any; productId: any; productName: any; variantName: any; sku: any; currentStock: any; minStockLevel: number; maxStockLevel: number; avgDailyDemand: number; daysOfStockRemaining: number; recommendation: string; suggestedOrderQuantity: number; forecast: any; }' is not assignable to parameter of type 'never'.
+
+[7m536[0m       recommendations.push({
+[7m   [0m [91m                           ~[0m
+[7m537[0m         variantId: inventory.variant.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m549[0m         forecast: forecast.forecast.slice(0, 7), // Include 7-day forecast
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m550[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m3[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'async'.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'getSeasonalTrends'.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m27[0m - [91merror[0m[90m TS2304: [0mCannot find name 'productId'.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                          ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m36[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                   ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m38[0m - [91merror[0m[90m TS2693: [0m'string' only refers to a type, but is being used as a value here.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                     ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m46[0m - [91merror[0m[90m TS2304: [0mCannot find name 'period'.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                             ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m52[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                   ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m54[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                     ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m66[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                                 ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m80[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                                               ~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m89[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                                                        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m560[0m:[93m102[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m560[0m   async getSeasonalTrends(productId: string, period: 'monthly' | 'quarterly' | 'yearly' = 'monthly') {
+[7m   [0m [91m                                                                                                     ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m561[0m:[93m64[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m561[0m     const { data: orderItems, error: orderItemsError } = await this.supabaseService.getClient()
+[7m   [0m [91m                                                               ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m568[0m:[93m33[0m - [91merror[0m[90m TS2304: [0mCannot find name 'productId'.
+
+[7m568[0m       .eq('variant.product_id', productId)
+[7m   [0m [91m                                ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m577[0m:[93m25[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m577[0m     const groupedData = this.groupByPeriod(orderItems, period);
+[7m   [0m [91m                        ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m577[0m:[93m56[0m - [91merror[0m[90m TS2304: [0mCannot find name 'period'.
+
+[7m577[0m     const groupedData = this.groupByPeriod(orderItems, period);
+[7m   [0m [91m                                                       ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m580[0m:[93m29[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m580[0m     const seasonalIndices = this.calculateSeasonalIndices(groupedData);
+[7m   [0m [91m                            ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m3[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m3[0m - [91merror[0m[90m TS2304: [0mCannot find name 'async'.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m  ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'predictRestockDate'.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m        ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m28[0m - [91merror[0m[90m TS2304: [0mCannot find name 'variantId'.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                           ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m37[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m39[0m - [91merror[0m[90m TS2693: [0m'string' only refers to a type, but is being used as a value here.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                      ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m47[0m - [91merror[0m[90m TS2304: [0mCannot find name 'warehouseId'.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                              ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m58[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                                         ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m60[0m - [91merror[0m[90m TS2693: [0m'string' only refers to a type, but is being used as a value here.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                                           ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m591[0m:[93m68[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m591[0m   async predictRestockDate(variantId: string, warehouseId: string) {
+[7m   [0m [91m                                                                   ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m593[0m:[93m62[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m593[0m     const { data: inventory, error: inventoryError } = await this.supabaseService.getClient()
+[7m   [0m [91m                                                             ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m596[0m:[93m25[0m - [91merror[0m[90m TS2304: [0mCannot find name 'variantId'.
+
+[7m596[0m       .eq('variant_id', variantId)
+[7m   [0m [91m                        ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m597[0m:[93m27[0m - [91merror[0m[90m TS2304: [0mCannot find name 'warehouseId'.
+
+[7m597[0m       .eq('warehouse_id', warehouseId)
+[7m   [0m [91m                          ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m605[0m:[93m28[0m - [91merror[0m[90m TS2532: [0mObject is possibly 'undefined'.
+
+[7m605[0m     const forecast = await this.generateDemandForecast(
+[7m   [0m [91m                           ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m606[0m:[93m7[0m - [91merror[0m[90m TS2304: [0mCannot find name 'variantId'.
+
+[7m606[0m       variantId,
+[7m   [0m [91m      ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'processHistoricalData'.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m33[0m - [91merror[0m[90m TS2304: [0mCannot find name 'orderItems'.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m43[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                          ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m45[0m - [91merror[0m[90m TS2693: [0m'any' only refers to a type, but is being used as a value here.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                            ~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m49[0m - [91merror[0m[90m TS1011: [0mAn element access expression should take an argument.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                                [0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m52[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                                   ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m56[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                                       ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m58[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                                         ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m638[0m:[93m66[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m638[0m   private processHistoricalData(orderItems: any[], days: number) {
+[7m   [0m [91m                                                                 ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m642[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'orderItems'.
+
+[7m642[0m     orderItems.forEach(item => {
+[7m   [0m [91m    ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m650[0m:[93m18[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m650[0m     for (let i = days - 1; i >= 0; i--) {
+[7m   [0m [91m                 ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m655[0m:[93m19[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ date: string; demand: number; }' is not assignable to parameter of type 'never'.
+
+[7m655[0m       result.push({
+[7m   [0m [91m                  ~[0m
+[7m656[0m         date: dateStr,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m657[0m         demand: dailyDemand.get(dateStr) || 0,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m658[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m664[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m664[0m   private applyForecastingAlgorithm(
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m664[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'applyForecastingAlgorithm'.
+
+[7m664[0m   private applyForecastingAlgorithm(
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m665[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m665[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m665[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m665[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m                  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m666[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m666[0m     days: number,
+[7m   [0m [91m    ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m666[0m:[93m9[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m666[0m     days: number,
+[7m   [0m [91m        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m666[0m:[93m11[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m666[0m     days: number,
+[7m   [0m [91m          ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m667[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'algorithm'.
+
+[7m667[0m     algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
+[7m   [0m [91m    ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m667[0m:[93m14[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m667[0m     algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
+[7m   [0m [91m             ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m667[0m:[93m16[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m667[0m     algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
+[7m   [0m [91m               ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m667[0m:[93m35[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m667[0m     algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
+[7m   [0m [91m                                  ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m667[0m:[93m61[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m667[0m     algorithm: 'moving_average' | 'exponential_smoothing' | 'regression',
+[7m   [0m [91m                                                            ~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m668[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'options'.
+
+[7m668[0m     options?: any
+[7m   [0m [91m    ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m668[0m:[93m13[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m668[0m     options?: any
+[7m   [0m [91m            ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m668[0m:[93m15[0m - [91merror[0m[90m TS2693: [0m'any' only refers to a type, but is being used as a value here.
+
+[7m668[0m     options?: any
+[7m   [0m [91m              ~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m669[0m:[93m5[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m669[0m   ) {
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m670[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'algorithm'.
+
+[7m670[0m     switch (algorithm) {
+[7m   [0m [91m            ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m682[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m682[0m   private movingAverageForecast(
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m682[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'movingAverageForecast'.
+
+[7m682[0m   private movingAverageForecast(
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m683[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m683[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m683[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m683[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m                  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m684[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m684[0m     days: number,
+[7m   [0m [91m    ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m684[0m:[93m9[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m684[0m     days: number,
+[7m   [0m [91m        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m684[0m:[93m11[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m684[0m     days: number,
+[7m   [0m [91m          ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m685[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'windowSize'.
+
+[7m685[0m     windowSize: number = 7
+[7m   [0m [91m    ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m685[0m:[93m15[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m685[0m     windowSize: number = 7
+[7m   [0m [91m              ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m685[0m:[93m17[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m685[0m     windowSize: number = 7
+[7m   [0m [91m                ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m686[0m:[93m5[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m686[0m   ) {
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m688[0m:[93m24[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m688[0m     const recentData = historicalData.slice(-windowSize);
+[7m   [0m [91m                       ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m688[0m:[93m46[0m - [91merror[0m[90m TS2304: [0mCannot find name 'windowSize'.
+
+[7m688[0m     const recentData = historicalData.slice(-windowSize);
+[7m   [0m [91m                                             ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m693[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m693[0m     for (let i = 1; i <= days; i++) {
+[7m   [0m [91m                         ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m697[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ date: string; demand: number; confidence: number; }' is not assignable to parameter of type 'never'.
+
+[7m697[0m       forecast.push({
+[7m   [0m [91m                    ~[0m
+[7m698[0m         date: futureDate.toISOString().split('T')[0],
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m700[0m         confidence: 0.8, // 80% confidence for simple moving average
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m701[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m707[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m707[0m   private exponentialSmoothingForecast(
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m707[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'exponentialSmoothingForecast'.
+
+[7m707[0m   private exponentialSmoothingForecast(
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m708[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m708[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m708[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m708[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m                  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m709[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m709[0m     days: number,
+[7m   [0m [91m    ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m709[0m:[93m9[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m709[0m     days: number,
+[7m   [0m [91m        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m709[0m:[93m11[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m709[0m     days: number,
+[7m   [0m [91m          ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m710[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'alpha'.
+
+[7m710[0m     alpha: number = 0.3
+[7m   [0m [91m    ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m710[0m:[93m10[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m710[0m     alpha: number = 0.3
+[7m   [0m [91m         ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m710[0m:[93m12[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m710[0m     alpha: number = 0.3
+[7m   [0m [91m           ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m711[0m:[93m5[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m711[0m   ) {
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m712[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m712[0m     if (historicalData.length === 0) {
+[7m   [0m [91m        ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m721[0m:[93m25[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m721[0m     let forecastValue = historicalData[0].demand;
+[7m   [0m [91m                        ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m724[0m:[93m25[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m724[0m     for (let i = 1; i < historicalData.length; i++) {
+[7m   [0m [91m                        ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m725[0m:[93m23[0m - [91merror[0m[90m TS2304: [0mCannot find name 'alpha'.
+
+[7m725[0m       forecastValue = alpha * historicalData[i].demand + (1 - alpha) * forecastValue;
+[7m   [0m [91m                      ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m725[0m:[93m31[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m725[0m       forecastValue = alpha * historicalData[i].demand + (1 - alpha) * forecastValue;
+[7m   [0m [91m                              ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m725[0m:[93m63[0m - [91merror[0m[90m TS2304: [0mCannot find name 'alpha'.
+
+[7m725[0m       forecastValue = alpha * historicalData[i].demand + (1 - alpha) * forecastValue;
+[7m   [0m [91m                                                              ~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m730[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m730[0m     for (let i = 1; i <= days; i++) {
+[7m   [0m [91m                         ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m734[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ date: string; demand: any; confidence: number; }' is not assignable to parameter of type 'never'.
+
+[7m734[0m       forecast.push({
+[7m   [0m [91m                    ~[0m
+[7m735[0m         date: futureDate.toISOString().split('T')[0],
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m737[0m         confidence: 0.7, // 70% confidence for exponential smoothing
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m738[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m744[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m744[0m   private linearRegressionForecast(
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m744[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'linearRegressionForecast'.
+
+[7m744[0m   private linearRegressionForecast(
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m745[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m745[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m745[0m:[93m19[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m745[0m     historicalData: Array<{ date: string; demand: number }>,
+[7m   [0m [91m                  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m746[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m746[0m     days: number
+[7m   [0m [91m    ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m746[0m:[93m9[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m746[0m     days: number
+[7m   [0m [91m        ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m746[0m:[93m11[0m - [91merror[0m[90m TS2693: [0m'number' only refers to a type, but is being used as a value here.
+
+[7m746[0m     days: number
+[7m   [0m [91m          ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m747[0m:[93m5[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m747[0m   ) {
+[7m   [0m [91m    ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m749[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m749[0m     const xValues = historicalData.map((_, index) => index);
+[7m   [0m [91m                    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m750[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'historicalData'.
+
+[7m750[0m     const yValues = historicalData.map(item => item.demand);
+[7m   [0m [91m                    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m764[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'days'.
+
+[7m764[0m     for (let i = 1; i <= days; i++) {
+[7m   [0m [91m                         ~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m771[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ date: string; demand: number; confidence: number; }' is not assignable to parameter of type 'never'.
+
+[7m771[0m       forecast.push({
+[7m   [0m [91m                    ~[0m
+[7m772[0m         date: futureDate.toISOString().split('T')[0],
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m774[0m         confidence: 0.75, // 75% confidence for linear regression
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m775[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'groupByPeriod'.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m          ~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m25[0m - [91merror[0m[90m TS2304: [0mCannot find name 'orderItems'.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                        ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m35[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                  ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m37[0m - [91merror[0m[90m TS2693: [0m'any' only refers to a type, but is being used as a value here.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                    ~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m41[0m - [91merror[0m[90m TS1011: [0mAn element access expression should take an argument.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                        [0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m44[0m - [91merror[0m[90m TS2304: [0mCannot find name 'period'.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                           ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m50[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                                 ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m52[0m - [91merror[0m[90m TS2362: [0mThe left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                                   ~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m64[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                                               ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m78[0m - [91merror[0m[90m TS2363: [0mThe right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                                                             ~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m781[0m:[93m88[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m781[0m   private groupByPeriod(orderItems: any[], period: 'monthly' | 'quarterly' | 'yearly') {
+[7m   [0m [91m                                                                                       ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m784[0m:[93m5[0m - [91merror[0m[90m TS2304: [0mCannot find name 'orderItems'.
+
+[7m784[0m     orderItems.forEach(item => {
+[7m   [0m [91m    ~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m788[0m:[93m15[0m - [91merror[0m[90m TS2304: [0mCannot find name 'period'.
+
+[7m788[0m       switch (period) {
+[7m   [0m [91m              ~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m813[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m813[0m   private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m813[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'calculateSeasonalIndices'.
+
+[7m813[0m   private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m813[0m:[93m36[0m - [91merror[0m[90m TS2304: [0mCannot find name 'groupedData'.
+
+[7m813[0m   private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
+[7m   [0m [91m                                   ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m813[0m:[93m47[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m813[0m   private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
+[7m   [0m [91m                                              ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m813[0m:[93m94[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m813[0m   private calculateSeasonalIndices(groupedData: Array<{ period: string; quantity: number }>) {
+[7m   [0m [91m                                                                                             ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m815[0m:[93m27[0m - [91merror[0m[90m TS2304: [0mCannot find name 'groupedData'.
+
+[7m815[0m     const totalQuantity = groupedData.reduce((sum, item) => sum + item.quantity, 0);
+[7m   [0m [91m                          ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m816[0m:[93m41[0m - [91merror[0m[90m TS2304: [0mCannot find name 'groupedData'.
+
+[7m816[0m     const avgQuantity = totalQuantity / groupedData.length;
+[7m   [0m [91m                                        ~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m826[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m826[0m   private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m826[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'analyzeSeasonalPatterns'.
+
+[7m826[0m   private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m826[0m:[93m35[0m - [91merror[0m[90m TS2304: [0mCannot find name 'seasonalIndices'.
+
+[7m826[0m   private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
+[7m   [0m [91m                                  ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m826[0m:[93m50[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m826[0m   private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
+[7m   [0m [91m                                                 ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m826[0m:[93m120[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m826[0m   private analyzeSeasonalPatterns(seasonalIndices: Array<{ period: string; quantity: number; seasonalIndex: number }>) {
+[7m   [0m [91m                                                                                                                       ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m828[0m:[93m31[0m - [91merror[0m[90m TS2304: [0mCannot find name 'seasonalIndices'.
+
+[7m828[0m     const sortedIndices = [...seasonalIndices].sort((a, b) => b.seasonalIndex - a.seasonalIndex);
+[7m   [0m [91m                              ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m838[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m838[0m   private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
+[7m   [0m [91m  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m838[0m:[93m11[0m - [91merror[0m[90m TS2304: [0mCannot find name 'calculateVolatility'.
+
+[7m838[0m   private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
+[7m   [0m [91m          ~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m838[0m:[93m31[0m - [91merror[0m[90m TS2304: [0mCannot find name 'indices'.
+
+[7m838[0m   private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
+[7m   [0m [91m                              ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m838[0m:[93m38[0m - [91merror[0m[90m TS1005: [0m',' expected.
+
+[7m838[0m   private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
+[7m   [0m [91m                                     ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m838[0m:[93m74[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m838[0m   private calculateVolatility(indices: Array<{ seasonalIndex: number }>) {
+[7m   [0m [91m                                                                         ~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m839[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'indices'.
+
+[7m839[0m     const avgIndex = indices.reduce((sum, item) => sum + item.seasonalIndex, 0) / indices.length;
+[7m   [0m [91m                     ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m839[0m:[93m83[0m - [91merror[0m[90m TS2304: [0mCannot find name 'indices'.
+
+[7m839[0m     const avgIndex = indices.reduce((sum, item) => sum + item.seasonalIndex, 0) / indices.length;
+[7m   [0m [91m                                                                                  ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m840[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'indices'.
+
+[7m840[0m     const variance = indices.reduce((sum, item) => sum + Math.pow(item.seasonalIndex - avgIndex, 2), 0) / indices.length;
+[7m   [0m [91m                     ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m840[0m:[93m107[0m - [91merror[0m[90m TS2304: [0mCannot find name 'indices'.
+
+[7m840[0m     const variance = indices.reduce((sum, item) => sum + Math.pow(item.seasonalIndex - avgIndex, 2), 0) / indices.length;
+[7m   [0m [91m                                                                                                          ~~~~~~~[0m
+[96msrc/modules/forecasting/forecasting.service.ts[0m:[93m843[0m:[93m1[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m843[0m }
+[7m   [0m [91m~[0m
+[96msrc/modules/gst-compliance/gst-compliance.controller.ts[0m:[93m120[0m:[93m17[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m120[0m     @Res() res: Response
+[7m   [0m [91m                ~~~~~~~~[0m
+
+  [96msrc/modules/gst-compliance/gst-compliance.controller.ts[0m:[93m13[0m:[93m10[0m
+    [7m13[0m import { Response } from 'express';
+    [7m  [0m [96m         ~~~~~~~~[0m
+    'Response' was imported here.
+[96msrc/modules/gst-compliance/gst-compliance.service.ts[0m:[93m337[0m:[93m38[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ invoiceNumber: any; invoiceDate: any; customerGst: any; customerName: string; placeOfSupply: any; taxableValue: number; cgst: any; sgst: any; igst: any; totalGst: any; totalValue: any; invoiceType: string; }' is not assignable to parameter of type 'never'.
+
+[7m337[0m         gstr1Report.b2bInvoices.push({
+[7m   [0m [91m                                     ~[0m
+[7m338[0m           invoiceNumber: inv.invoice_number,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m351[0m           invoiceType: isInterState ? 'INTER' : 'INTRA',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m352[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/gst-compliance/gst-compliance.service.ts[0m:[93m356[0m:[93m41[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ invoiceNumber: any; invoiceDate: any; placeOfSupply: any; taxableValue: number; cgst: any; sgst: any; igst: any; totalGst: any; totalValue: any; invoiceType: string; }' is not assignable to parameter of type 'never'.
+
+[7m356[0m           gstr1Report.b2clInvoices.push({
+[7m   [0m [91m                                        ~[0m
+[7m357[0m             invoiceNumber: inv.invoice_number,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m368[0m             invoiceType: isInterState ? 'INTER' : 'INTRA',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m369[0m           });
+[7m   [0m [91m~~~~~~~~~~~[0m
+[96msrc/modules/gst-compliance/gst-compliance.service.ts[0m:[93m371[0m:[93m41[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ placeOfSupply: any; taxableValue: number; cgst: any; sgst: any; igst: any; totalGst: any; totalValue: any; invoiceType: string; }' is not assignable to parameter of type 'never'.
+
+[7m371[0m           gstr1Report.b2csInvoices.push({
+[7m   [0m [91m                                        ~[0m
+[7m372[0m             placeOfSupply: isInterState
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m381[0m             invoiceType: isInterState ? 'INTER' : 'INTRA',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m382[0m           });
+[7m   [0m [91m~~~~~~~~~~~[0m
+[96msrc/modules/inventory-tracking/inventory-tracking.service.ts[0m:[93m255[0m:[93m7[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null' is not assignable to parameter of type 'string | undefined'.
+
+[7m255[0m       null
+[7m   [0m [91m      ~~~~[0m
+[96msrc/modules/inventory-tracking/inventory-tracking.service.ts[0m:[93m308[0m:[93m7[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null' is not assignable to parameter of type 'string | undefined'.
+
+[7m308[0m       null
+[7m   [0m [91m      ~~~~[0m
+[96msrc/modules/inventory/dto/inventory.dto.ts[0m:[93m278[0m:[93m4[0m - [91merror[0m[90m TS2552: [0mCannot find name 'IsArray'. Did you mean 'Array'?
+
+[7m278[0m   @IsArray()
+[7m   [0m [91m   ~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es5.d.ts[0m:[93m1524[0m:[93m13[0m
+    [7m1524[0m declare var Array: ArrayConstructor;
+    [7m    [0m [96m            ~~~~~[0m
+    'Array' is declared here.
+[96msrc/modules/inventory/dto/inventory.dto.ts[0m:[93m279[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ValidateNested'.
+
+[7m279[0m   @ValidateNested({ each: true })
+[7m   [0m [91m   ~~~~~~~~~~~~~~[0m
+[96msrc/modules/inventory/inventory.service.ts[0m:[93m24[0m:[93m3[0m - [91merror[0m[90m TS2305: [0mModule '"./dto/inventory.dto"' has no exported member 'CreateStockReservationDto'.
+
+[7m24[0m   CreateStockReservationDto
+[7m  [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/inventory/inventory.service.ts[0m:[93m161[0m:[93m7[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'totalValue' does not exist in type 'CreateInventoryTransactionDto'.
+
+[7m161[0m       totalValue: batch.costPerUnit * batch.quantity,
+[7m   [0m [91m      ~~~~~~~~~~[0m
+[96msrc/modules/inventory/inventory.service.ts[0m:[93m278[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ status: "requested"; createdAt: Date; updatedAt: Date; fromLocation: string; toLocation: string; items: InventoryTransferItemDto[]; requestedBy: string; notes?: string; id: string; }' is not assignable to type 'InventoryTransfer'.
+  Types of property 'items' are incompatible.
+    Type 'InventoryTransferItemDto[]' is not assignable to type 'InventoryTransferItem[]'.
+      Property 'id' is missing in type 'InventoryTransferItemDto' but required in type 'InventoryTransferItem'.
+
+[7m278[0m     const transfer: InventoryTransfer = {
+[7m   [0m [91m          ~~~~~~~~[0m
+
+  [96msrc/modules/inventory/interfaces/inventory.interface.ts[0m:[93m80[0m:[93m3[0m
+    [7m80[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m157[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ productId: any; productName: any; hsnCode: any; gstRate: number; taxableAmount: number; cgstAmount: number; sgstAmount: number; igstAmount: number; }' is not assignable to parameter of type 'never'.
+
+[7m157[0m       itemTaxDetails.push(itemTax);
+[7m   [0m [91m                          ~~~~~~~[0m
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m217[0m:[93m65[0m - [91merror[0m[90m TS2339: [0mProperty 'cgstAmount' does not exist on type 'never'.
+
+[7m217[0m             cgst_amount: parseFloat((isInterState ? 0 : itemTax.cgstAmount).toFixed(2)),
+[7m   [0m [91m                                                                ~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m218[0m:[93m65[0m - [91merror[0m[90m TS2339: [0mProperty 'sgstAmount' does not exist on type 'never'.
+
+[7m218[0m             sgst_amount: parseFloat((isInterState ? 0 : itemTax.sgstAmount).toFixed(2)),
+[7m   [0m [91m                                                                ~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m219[0m:[93m61[0m - [91merror[0m[90m TS2339: [0mProperty 'igstAmount' does not exist on type 'never'.
+
+[7m219[0m             igst_amount: parseFloat((isInterState ? itemTax.igstAmount : 0).toFixed(2)),
+[7m   [0m [91m                                                            ~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m220[0m:[93m48[0m - [91merror[0m[90m TS2339: [0mProperty 'taxableAmount' does not exist on type 'never'.
+
+[7m220[0m             taxable_amount: parseFloat(itemTax.taxableAmount.toFixed(2)),
+[7m   [0m [91m                                               ~~~~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoice.service.ts[0m:[93m510[0m:[93m40[0m - [91merror[0m[90m TS18046: [0m'totalTaxableAmount' is of type 'unknown'.
+
+[7m510[0m         totalTaxableAmount: parseFloat(totalTaxableAmount.toFixed(2)),
+[7m   [0m [91m                                       ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoices.service.ts[0m:[93m68[0m:[93m11[0m - [91merror[0m[90m TS2741: [0mProperty 'currency' is missing in type '{ items: { id: string; productId: string; productName: string; sku: string; hsnCode: string; quantity: number; unitPrice: number; discountPercentage: number; taxableValue: number; gstRate: number; gstAmount: number; total: number; }[]; ... 25 more ...; invoiceNumber: string; }' but required in type 'Invoice'.
+
+[7m68[0m     const invoice: Invoice = {
+[7m  [0m [91m          ~~~~~~~[0m
+
+  [96msrc/modules/invoices/interfaces/invoice.interface.ts[0m:[93m19[0m:[93m3[0m
+    [7m19[0m   currency: string;
+    [7m  [0m [96m  ~~~~~~~~[0m
+    'currency' is declared here.
+[96msrc/modules/invoices/invoices.service.ts[0m:[93m152[0m:[93m9[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'paymentStatus' does not exist in type 'UpdateOrderDto'.
+
+[7m152[0m         paymentStatus: 'paid',
+[7m   [0m [91m        ~~~~~~~~~~~~~[0m
+[96msrc/modules/invoices/invoices.service.ts[0m:[93m156[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType '{ updatedAt: Date; status: "draft" | "generated" | "sent" | "paid" | "overdue" | "cancelled"; notes?: string; sentAt?: string | Date | undefined; paidAt?: string | Date | undefined; ... 26 more ...; createdAt: Date; }' is not assignable to type 'Invoice'.
+  Types of property 'sentAt' are incompatible.
+    Type 'string | Date | undefined' is not assignable to type 'Date | undefined'.
+      Type 'string' is not assignable to type 'Date'.
+
+[7m156[0m     this.invoices[index] = {
+[7m   [0m [91m    ~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/logging/logging.service.ts[0m:[93m161[0m:[93m21[0m - [91merror[0m[90m TS2339: [0mProperty 'offset' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "logs", unknown, "GET">'.
+
+[7m161[0m       query = query.offset(filters.offset);
+[7m   [0m [91m                    ~~~~~~[0m
+[96msrc/modules/logging/logging.service.ts[0m:[93m198[0m:[93m21[0m - [91merror[0m[90m TS2339: [0mProperty 'offset' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "logs", unknown, "GET">'.
+
+[7m198[0m       query = query.offset(filters.offset);
+[7m   [0m [91m                    ~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m1[0m:[93m38[0m - [91merror[0m[90m TS2724: [0m'"@nestjs/common"' has no exported member named 'PlatformExceptionFilter'. Did you mean 'RpcExceptionFilter'?
+
+[7m1[0m import { Injectable, Logger, Inject, PlatformExceptionFilter } from '@nestjs/common';
+[7m [0m [91m                                     ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m17[0m:[93m59[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m17[0m   constructor(@Inject(REQUEST) private readonly request?: Request) {}
+[7m  [0m [91m                                                          ~~~~~~~[0m
+
+  [96msrc/modules/logging/sentry.service.ts[0m:[93m4[0m:[93m10[0m
+    [7m4[0m import { Request } from 'express';
+    [7m [0m [96m         ~~~~~~~[0m
+    'Request' was imported here.
+[96msrc/modules/logging/sentry.service.ts[0m:[93m34[0m:[93m20[0m - [91merror[0m[90m TS2551: [0mProperty 'Integrations' does not exist on type 'typeof import("F:/code/headless/node_modules/.pnpm/@sentry+node@9.47.1/node_modules/@sentry/node/build/types/index")'. Did you mean 'fsIntegration'?
+
+[7m34[0m         new Sentry.Integrations.Http({ tracing: true }),
+[7m  [0m [91m                   ~~~~~~~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m35[0m:[93m20[0m - [91merror[0m[90m TS2551: [0mProperty 'Integrations' does not exist on type 'typeof import("F:/code/headless/node_modules/.pnpm/@sentry+node@9.47.1/node_modules/@sentry/node/build/types/index")'. Did you mean 'fsIntegration'?
+
+[7m35[0m         new Sentry.Integrations.Express({ app: undefined }),
+[7m  [0m [91m                   ~~~~~~~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m106[0m:[93m32[0m - [91merror[0m[90m TS2339: [0mProperty 'startTransaction' does not exist on type 'typeof import("F:/code/headless/node_modules/.pnpm/@sentry+node@9.47.1/node_modules/@sentry/node/build/types/index")'.
+
+[7m106[0m     const transaction = Sentry.startTransaction({ name, op });
+[7m   [0m [91m                               ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m107[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'setSpan' does not exist on type 'Scope'.
+
+[7m107[0m     Sentry.getCurrentScope().setSpan(transaction);
+[7m   [0m [91m                             ~~~~~~~[0m
+[96msrc/modules/logging/sentry.service.ts[0m:[93m130[0m:[93m14[0m - [91merror[0m[90m TS2339: [0mProperty 'metrics' does not exist on type 'typeof import("F:/code/headless/node_modules/.pnpm/@sentry+node@9.47.1/node_modules/@sentry/node/build/types/index")'.
+
+[7m130[0m       Sentry.metrics?.distribution(label, duration);
+[7m   [0m [91m             ~~~~~~~[0m
+[96msrc/modules/loyalty-program/dto/redeem-points.dto.ts[0m:[93m15[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'IsOptional'.
+
+[7m15[0m   @IsOptional()
+[7m  [0m [91m   ~~~~~~~~~~[0m
+[96msrc/modules/loyalty-program/loyalty-program.module.ts[0m:[93m3[0m:[93m10[0m - [91merror[0m[90m TS2724: [0m'"./loyalty-program.controller"' has no exported member named 'LoyaltyProgramController'. Did you mean 'LoyaltyController'?
+
+[7m3[0m import { LoyaltyProgramController } from './loyalty-program.controller';
+[7m [0m [91m         ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/loyalty-program/loyalty-program.controller.ts[0m:[93m35[0m:[93m14[0m
+    [7m35[0m export class LoyaltyController {
+    [7m  [0m [96m             ~~~~~~~~~~~~~~~~~[0m
+    'LoyaltyController' is declared here.
+[96msrc/modules/loyalty-program/loyalty-program.module.ts[0m:[93m5[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.module' or its corresponding type declarations.
+
+[7m5[0m import { CustomersModule } from '../customers/customers.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/loyalty-program/loyalty-program.service.ts[0m:[93m509[0m:[93m31[0m - [91merror[0m[90m TS2339: [0mProperty 'id' does not exist on type '{ customer_id: any; points: any; }'.
+
+[7m509[0m         .eq('id', transaction.id);
+[7m   [0m [91m                              ~~[0m
+[96msrc/modules/loyalty-program/loyalty.controller.ts[0m:[93m60[0m:[93m32[0m - [91merror[0m[90m TS2554: [0mExpected 1 arguments, but got 0.
+
+[7m60[0m     return this.loyaltyService.getEligibleRewards();
+[7m  [0m [91m                               ~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/loyalty-program/loyalty.service.ts[0m:[93m194[0m:[93m28[0m
+    [7m194[0m   async getEligibleRewards(userId: string) {
+    [7m   [0m [96m                           ~~~~~~~~~~~~~~[0m
+    An argument for 'userId' was not provided.
+[96msrc/modules/loyalty-program/loyalty.service.ts[0m:[93m225[0m:[93m108[0m - [91merror[0m[90m TS2304: [0mCannot find name 'userLoyalty'.
+
+[7m225[0m       throw new Error(`Insufficient points to claim this reward. Cost: ${reward.cost_points}, Available: ${userLoyalty.points_balance}`);
+[7m   [0m [91m                                                                                                           ~~~~~~~~~~~[0m
+[96msrc/modules/loyalty-program/loyalty.service.ts[0m:[93m229[0m:[93m91[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null' is not assignable to parameter of type 'string | undefined'.
+
+[7m229[0m     await this.redeemPoints(userId, reward.cost_points, `Claimed reward: ${reward.name}`, null);
+[7m   [0m [91m                                                                                          ~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.controller.ts[0m:[93m149[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType '"adjustment"' is not assignable to type 'UpdateType'.
+
+[7m149[0m       type: 'adjustment',
+[7m   [0m [91m      ~~~~[0m
+
+  [96msrc/modules/mobile-pos/dto/update-pos-transaction.dto.ts[0m:[93m10[0m:[93m3[0m
+    [7m10[0m   type: UpdateType;
+    [7m  [0m [96m  ~~~~[0m
+    The expected type comes from property 'type' which is declared here on type 'UpdatePosTransactionDto'
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m63[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ variant_id: string; variant_name: any; product_name: any; quantity: number; unit_price: any; total_price: number; hsn_code: any; }' is not assignable to parameter of type 'never'.
+
+[7m 63[0m       processedItems.push({
+[7m   [0m [91m                          ~[0m
+[7m 64[0m         variant_id: item.variantId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m 70[0m         hsn_code: variant.hsn_code || '',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 71[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m119[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'variant_id' does not exist on type 'never'.
+
+[7m119[0m             variant_id: item.variant_id,
+[7m   [0m [91m                             ~~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m120[0m:[93m32[0m - [91merror[0m[90m TS2339: [0mProperty 'variant_name' does not exist on type 'never'.
+
+[7m120[0m             variant_name: item.variant_name,
+[7m   [0m [91m                               ~~~~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m121[0m:[93m32[0m - [91merror[0m[90m TS2339: [0mProperty 'product_name' does not exist on type 'never'.
+
+[7m121[0m             product_name: item.product_name,
+[7m   [0m [91m                               ~~~~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m122[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'hsn_code' does not exist on type 'never'.
+
+[7m122[0m             hsn_code: item.hsn_code,
+[7m   [0m [91m                           ~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m123[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'quantity' does not exist on type 'never'.
+
+[7m123[0m             quantity: item.quantity,
+[7m   [0m [91m                           ~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m124[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'unit_price' does not exist on type 'never'.
+
+[7m124[0m             unit_price: item.unit_price,
+[7m   [0m [91m                             ~~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m125[0m:[93m31[0m - [91merror[0m[90m TS2339: [0mProperty 'total_price' does not exist on type 'never'.
+
+[7m125[0m             total_price: item.total_price,
+[7m   [0m [91m                              ~~~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m290[0m:[93m22[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ transactionId: any; success: boolean; syncResult: { synced: boolean; transactionId: any; }; }' is not assignable to parameter of type 'never'.
+
+[7m290[0m         results.push({
+[7m   [0m [91m                     ~[0m
+[7m291[0m           transactionId: transaction.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m293[0m           syncResult
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~[0m
+[7m294[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m296[0m:[93m22[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ transactionId: any; success: boolean; error: any; }' is not assignable to parameter of type 'never'.
+
+[7m296[0m         results.push({
+[7m   [0m [91m                     ~[0m
+[7m297[0m           transactionId: transaction.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m299[0m           error: syncError.message
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m300[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m306[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'success' does not exist on type 'never'.
+
+[7m306[0m       syncedCount: results.filter(r => r.success).length,
+[7m   [0m [91m                                         ~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m307[0m:[93m43[0m - [91merror[0m[90m TS2339: [0mProperty 'success' does not exist on type 'never'.
+
+[7m307[0m       failedCount: results.filter(r => !r.success).length,
+[7m   [0m [91m                                          ~~~~~~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m357[0m:[93m58[0m - [91merror[0m[90m TS2339: [0mProperty 'id' does not exist on type '{ total_amount: any; payment_method: any; }'.
+
+[7m357[0m       .in('pos_transaction_id', revenueData.map(tx => tx.id))
+[7m   [0m [91m                                                         ~~[0m
+[96msrc/modules/mobile-pos/mobile-pos.service.ts[0m:[93m358[0m:[93m8[0m - [91merror[0m[90m TS2339: [0mProperty 'group' does not exist on type 'PostgrestFilterBuilder<any, any, any, ParserError<"Unexpected input: as total_quantity,\n        SUM(total_price) as total_revenue\n      ">[], "pos_transaction_items", unknown, "GET">'.
+
+[7m358[0m       .group('product_name')
+[7m   [0m [91m       ~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m37[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ForbiddenException'.
+
+[7m37[0m       throw new ForbiddenException('You can only create notifications for yourself');
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m40[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'create' does not exist on type 'NotificationService'.
+
+[7m40[0m     return this.notificationService.create(createNotificationDto);
+[7m  [0m [91m                                    ~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m59[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m59[0m     @Req() req
+[7m  [0m [91m           ~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m61[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'findAll' does not exist on type 'NotificationService'.
+
+[7m61[0m     return this.notificationService.findAll(req.user.id, {
+[7m  [0m [91m                                    ~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m76[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'getUnreadCount' does not exist on type 'NotificationService'.
+
+[7m76[0m     return this.notificationService.getUnreadCount(req.user.id);
+[7m  [0m [91m                                    ~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m87[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'findOne' does not exist on type 'NotificationService'.
+
+[7m87[0m     return this.notificationService.findOne(id, req.user.id);
+[7m  [0m [91m                                    ~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m103[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'update' does not exist on type 'NotificationService'.
+
+[7m103[0m     return this.notificationService.update(id, updateNotificationDto, req.user.id);
+[7m   [0m [91m                                    ~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m115[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'markAsRead' does not exist on type 'NotificationService'.
+
+[7m115[0m     return this.notificationService.markAsRead(id, req.user.id);
+[7m   [0m [91m                                    ~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m126[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m126[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m128[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'markAllAsRead' does not exist on type 'NotificationService'.
+
+[7m128[0m     return this.notificationService.markAllAsRead(req.user.id, type);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m141[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'remove' does not exist on type 'NotificationService'.
+
+[7m141[0m     return this.notificationService.remove(id, req.user.id);
+[7m   [0m [91m                                    ~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m157[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'create' does not exist on type 'NotificationService'.
+
+[7m157[0m     return this.notificationService.create({
+[7m   [0m [91m                                    ~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m175[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'sendBroadcastNotification' does not exist on type 'NotificationService'.
+
+[7m175[0m     return this.notificationService.sendBroadcastNotification(role, createNotificationDto);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m205[0m:[93m37[0m - [91merror[0m[90m TS2551: [0mProperty 'getUserNotificationHistory' does not exist on type 'NotificationService'. Did you mean 'getNotificationHistory'?
+
+[7m205[0m     return this.notificationService.getUserNotificationHistory(req.user.id);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/notifications/notification.service.ts[0m:[93m464[0m:[93m9[0m
+    [7m464[0m   async getNotificationHistory(customerId: string, limit = 50): Promise<Notification[]> {
+    [7m   [0m [96m        ~~~~~~~~~~~~~~~~~~~~~~[0m
+    'getNotificationHistory' is declared here.
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m223[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ForbiddenException'.
+
+[7m223[0m       throw new ForbiddenException('Only admins can process partial payments');
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m226[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'processPartialPayment' does not exist on type 'NotificationService'.
+
+[7m226[0m     return this.notificationService.processPartialPayment(orderId, userId, amount);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m243[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m243[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m246[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ForbiddenException'.
+
+[7m246[0m       throw new ForbiddenException('Only admins can access dealer performance reports');
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m249[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'getDealerPerformanceNotifications' does not exist on type 'NotificationService'.
+
+[7m249[0m     return this.notificationService.getDealerPerformanceNotifications({
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m270[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m270[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m273[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ForbiddenException'.
+
+[7m273[0m       throw new ForbiddenException('Only admins can access distributor performance reports');
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m276[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'getDistributorPerformanceNotifications' does not exist on type 'NotificationService'.
+
+[7m276[0m     return this.notificationService.getDistributorPerformanceNotifications({
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m295[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'sendSeasonalReminderNotification' does not exist on type 'NotificationService'.
+
+[7m295[0m     return this.notificationService.sendSeasonalReminderNotification(userId, cropType, message);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.controller.ts[0m:[93m311[0m:[93m37[0m - [91merror[0m[90m TS2339: [0mProperty 'sendPromotionalNotification' does not exist on type 'NotificationService'.
+
+[7m311[0m     return this.notificationService.sendPromotionalNotification(userId, title, message, promoCode);
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notification.service.ts[0m:[93m262[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'null' is not assignable to type 'Notification'.
+
+[7m262[0m       return null;
+[7m   [0m [91m      ~~~~~~[0m
+[96msrc/modules/notifications/notification.service.ts[0m:[93m329[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'null' is not assignable to type 'Notification'.
+
+[7m329[0m       return null;
+[7m   [0m [91m      ~~~~~~[0m
+[96msrc/modules/notifications/notification.service.ts[0m:[93m395[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'null' is not assignable to type 'Notification'.
+
+[7m395[0m       return null;
+[7m   [0m [91m      ~~~~~~[0m
+[96msrc/modules/notifications/notifications.module.ts[0m:[93m5[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.module' or its corresponding type declarations.
+
+[7m5[0m import { CustomersModule } from '../customers/customers.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notifications.service.ts[0m:[93m22[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../customers/customers.service' or its corresponding type declarations.
+
+[7m22[0m import { CustomersService } from '../customers/customers.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/notifications/notifications.service.ts[0m:[93m467[0m:[93m73[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 5, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 5, '(vd: VarDate): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'VarDate'.
+      Type 'undefined' is not assignable to type 'VarDate'.
+  Overload 3 of 5, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+
+[7m467[0m       notifications = notifications.filter(n => n.createdAt >= new Date(getNotificationsDto.startDate));
+[7m   [0m [91m                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/modules/notifications/notifications.service.ts[0m:[93m471[0m:[93m73[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 5, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 5, '(vd: VarDate): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'VarDate'.
+      Type 'undefined' is not assignable to type 'VarDate'.
+  Overload 3 of 5, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+
+[7m471[0m       notifications = notifications.filter(n => n.createdAt <= new Date(getNotificationsDto.endDate));
+[7m   [0m [91m                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/modules/notifications/providers/notification-ws.provider.ts[0m:[93m8[0m:[93m4[0m - [91merror[0m[90m TS2348: [0mValue of type 'typeof Server' is not callable. Did you mean to include 'new'?
+
+[7m8[0m   @WebSocketServer()
+[7m [0m [91m   ~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/orders/order.controller.ts[0m:[93m103[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m103[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m110[0m:[93m23[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ variant_id: string; quantity: number; unit_price: any; total_price: number; product_name: any; }' is not assignable to parameter of type 'never'.
+
+[7m110[0m       orderItems.push({
+[7m   [0m [91m                      ~[0m
+[7m111[0m         variant_id: item.variantId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m115[0m         product_name: variant.product.name,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m116[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m164[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'variant_id' does not exist on type 'never'.
+
+[7m164[0m             variant_id: item.variant_id,
+[7m   [0m [91m                             ~~~~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m165[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'quantity' does not exist on type 'never'.
+
+[7m165[0m             quantity: item.quantity,
+[7m   [0m [91m                           ~~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m166[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'unit_price' does not exist on type 'never'.
+
+[7m166[0m             unit_price: item.unit_price,
+[7m   [0m [91m                             ~~~~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m167[0m:[93m31[0m - [91merror[0m[90m TS2339: [0mProperty 'total_price' does not exist on type 'never'.
+
+[7m167[0m             total_price: item.total_price,
+[7m   [0m [91m                              ~~~~~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m287[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ order_id: string; approver_role: string; status: string; required: boolean; }' is not assignable to parameter of type 'never'.
+
+[7m287[0m       approvalLevels.push({
+[7m   [0m [91m                          ~[0m
+[7m288[0m         order_id: orderId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m291[0m         required: true,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m292[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m294[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ order_id: string; approver_role: string; status: string; required: boolean; }' is not assignable to parameter of type 'never'.
+
+[7m294[0m       approvalLevels.push({
+[7m   [0m [91m                          ~[0m
+[7m295[0m         order_id: orderId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m298[0m         required: true,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m299[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m300[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ order_id: string; approver_role: string; status: string; required: boolean; }' is not assignable to parameter of type 'never'.
+
+[7m300[0m       approvalLevels.push({
+[7m   [0m [91m                          ~[0m
+[7m301[0m         order_id: orderId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m304[0m         required: true,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m305[0m       });
+[7m   [0m [91m~~~~~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m376[0m:[93m60[0m - [91merror[0m[90m TS2304: [0mCannot find name 'apr'.
+
+[7m376[0m     const allRequiredApproved = allApprovals.every(appr => apr.status === 'approved');
+[7m   [0m [91m                                                           ~~~[0m
+[96msrc/modules/orders/order.service.ts[0m:[93m377[0m:[93m51[0m - [91merror[0m[90m TS2304: [0mCannot find name 'apr'.
+
+[7m377[0m     const anyRejected = allApprovals.some(appr => apr.status === 'rejected');
+[7m   [0m [91m                                                  ~~~[0m
+[96msrc/modules/orders/orders.service.ts[0m:[93m153[0m:[93m7[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'approvedBy' does not exist in type 'UpdateOrderDto'.
+
+[7m153[0m       approvedBy: approveOrderDto.approverId,
+[7m   [0m [91m      ~~~~~~~~~~[0m
+[96msrc/modules/orders/orders.service.ts[0m:[93m181[0m:[93m7[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'rejectedBy' does not exist in type 'UpdateOrderDto'.
+
+[7m181[0m       rejectedBy: rejectOrderDto.approverId,
+[7m   [0m [91m      ~~~~~~~~~~[0m
+[96msrc/modules/orders/orders.service.ts[0m:[93m223[0m:[93m7[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'shippedAt' does not exist in type 'UpdateOrderDto'.
+
+[7m223[0m       shippedAt: new Date(),
+[7m   [0m [91m      ~~~~~~~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.controller.ts[0m:[93m64[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m64[0m     @Req() req
+[7m  [0m [91m           ~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.service.ts[0m:[93m57[0m:[93m17[0m - [91merror[0m[90m TS2367: [0mThis comparison appears to be unintentional because the types 'PaymentMethod' and '"upi"' have no overlap.
+
+[7m57[0m             ...(createPaymentDto.method === 'upi' && {
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.service.ts[0m:[93m60[0m:[93m17[0m - [91merror[0m[90m TS2367: [0mThis comparison appears to be unintentional because the types 'PaymentMethod' and '"card"' have no overlap.
+
+[7m60[0m             ...(createPaymentDto.method === 'card' && {
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.service.ts[0m:[93m64[0m:[93m17[0m - [91merror[0m[90m TS2367: [0mThis comparison appears to be unintentional because the types 'PaymentMethod' and '"net_banking"' have no overlap.
+
+[7m64[0m             ...(createPaymentDto.method === 'net_banking' && {
+[7m  [0m [91m                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.service.ts[0m:[93m349[0m:[93m38[0m - [91merror[0m[90m TS2339: [0mProperty 'reserved_quantity' does not exist on type '{ id: any; available_quantity: any; }'.
+
+[7m349[0m         reserved_quantity: inventory.reserved_quantity - quantity,
+[7m   [0m [91m                                     ~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m103[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ source: string; record: any; reason: string; }' is not assignable to parameter of type 'never'.
+
+[7m103[0m         unreconciled.push({
+[7m   [0m [91m                          ~[0m
+[7m104[0m           source: 'local',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m106[0m           reason: 'Missing in gateway records',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m107[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m117[0m:[93m28[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ local: any; gateway: any; differences: { amount: boolean; status: boolean; }; }' is not assignable to parameter of type 'never'.
+
+[7m117[0m         discrepancies.push({
+[7m   [0m [91m                           ~[0m
+[7m118[0m           local: localRecord,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m123[0m           },
+[7m   [0m [91m~~~~~~~~~~~~[0m
+[7m124[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m126[0m:[93m25[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ local: any; gateway: any; }' is not assignable to parameter of type 'never'.
+
+[7m126[0m         reconciled.push({
+[7m   [0m [91m                        ~[0m
+[7m127[0m           local: localRecord,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m128[0m           gateway: gatewayRecord,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m129[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m137[0m:[93m27[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ source: string; record: any; reason: string; }' is not assignable to parameter of type 'never'.
+
+[7m137[0m         unreconciled.push({
+[7m   [0m [91m                          ~[0m
+[7m138[0m           source: 'gateway',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m140[0m           reason: 'Missing in local records',
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m141[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m175[0m:[93m13[0m - [91merror[0m[90m TS18046: [0m'settlementResult' is of type 'unknown'.
+
+[7m175[0m         if (settlementResult.success) {
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m182[0m:[93m37[0m - [91merror[0m[90m TS18046: [0m'settlementResult' is of type 'unknown'.
+
+[7m182[0m               settlement_reference: settlementResult.settlementId,
+[7m   [0m [91m                                    ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m187[0m:[93m25[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ paymentId: any; error: string; }' is not assignable to parameter of type 'never'.
+
+[7m187[0m             errors.push({
+[7m   [0m [91m                        ~[0m
+[7m188[0m               paymentId: payment.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m189[0m               error: `Failed to update settlement status: ${updateError.message}`,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m190[0m             });
+[7m   [0m [91m~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m192[0m:[93m30[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ paymentId: any; orderId: any; amount: any; settlementId: any; }' is not assignable to parameter of type 'never'.
+
+[7m192[0m             settlements.push({
+[7m   [0m [91m                             ~[0m
+[7m193[0m               paymentId: payment.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m196[0m               settlementId: settlementResult.settlementId,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m197[0m             });
+[7m   [0m [91m~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m196[0m:[93m29[0m - [91merror[0m[90m TS18046: [0m'settlementResult' is of type 'unknown'.
+
+[7m196[0m               settlementId: settlementResult.settlementId,
+[7m   [0m [91m                            ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m200[0m:[93m23[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ paymentId: any; error: string; }' is not assignable to parameter of type 'never'.
+
+[7m200[0m           errors.push({
+[7m   [0m [91m                      ~[0m
+[7m201[0m             paymentId: payment.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m202[0m             error: `Gateway settlement failed: ${settlementResult.error}`,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m203[0m           });
+[7m   [0m [91m~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m202[0m:[93m50[0m - [91merror[0m[90m TS18046: [0m'settlementResult' is of type 'unknown'.
+
+[7m202[0m             error: `Gateway settlement failed: ${settlementResult.error}`,
+[7m   [0m [91m                                                 ~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m206[0m:[93m21[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ paymentId: any; error: string; }' is not assignable to parameter of type 'never'.
+
+[7m206[0m         errors.push({
+[7m   [0m [91m                    ~[0m
+[7m207[0m           paymentId: payment.id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m208[0m           error: `Settlement error: ${error.message}`,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m209[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/payment-reconciliation/payment-reconciliation.service.ts[0m:[93m374[0m:[93m21[0m - [91merror[0m[90m TS2339: [0mProperty 'offset' does not exist on type 'PostgrestFilterBuilder<any, any, any, any[], "reconciliation_reports", unknown, "GET">'.
+
+[7m374[0m       query = query.offset(filters.offset);
+[7m   [0m [91m                    ~~~~~~[0m
+[96msrc/modules/payments/payment.controller.ts[0m:[93m69[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m69[0m     @Req() req
+[7m  [0m [91m           ~~~[0m
+[96msrc/modules/payments/payments.service.ts[0m:[93m141[0m:[93m7[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'paymentStatus' does not exist in type 'UpdateOrderDto'.
+
+[7m141[0m       paymentStatus: newStatus === 'completed' ? 'paid' :
+[7m   [0m [91m      ~~~~~~~~~~~~~[0m
+[96msrc/modules/pricing/pricing.controller.ts[0m:[93m11[0m:[93m74[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m11[0m   createPricingRule(@Body() createPricingRuleDto: CreatePricingRuleDto): PricingRule {
+[7m  [0m [91m                                                                         ~~~~~~~~~~~[0m
+
+  [96msrc/modules/pricing/pricing.controller.ts[0m:[93m4[0m:[93m10[0m
+    [7m4[0m import { PricingRule, UserPricingTier } from './interfaces/pricing.interface';
+    [7m [0m [96m         ~~~~~~~~~~~[0m
+    'PricingRule' was imported here.
+[96msrc/modules/pricing/pricing.controller.ts[0m:[93m19[0m:[93m6[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m19[0m   ): PricingRule {
+[7m  [0m [91m     ~~~~~~~~~~~[0m
+
+  [96msrc/modules/pricing/pricing.controller.ts[0m:[93m4[0m:[93m10[0m
+    [7m4[0m import { PricingRule, UserPricingTier } from './interfaces/pricing.interface';
+    [7m [0m [96m         ~~~~~~~~~~~[0m
+    'PricingRule' was imported here.
+[96msrc/modules/pricing/pricing.controller.ts[0m:[93m29[0m:[93m48[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m29[0m   getPricingRuleById(@Param('id') id: string): PricingRule {
+[7m  [0m [91m                                               ~~~~~~~~~~~[0m
+
+  [96msrc/modules/pricing/pricing.controller.ts[0m:[93m4[0m:[93m10[0m
+    [7m4[0m import { PricingRule, UserPricingTier } from './interfaces/pricing.interface';
+    [7m [0m [96m         ~~~~~~~~~~~[0m
+    'PricingRule' was imported here.
+[96msrc/modules/pricing/pricing.controller.ts[0m:[93m49[0m:[93m56[0m - [91merror[0m[90m TS1272: [0mA type referenced in a decorated signature must be imported with 'import type' or a namespace import when 'isolatedModules' and 'emitDecoratorMetadata' are enabled.
+
+[7m49[0m   getUserPricingTier(@Param('userId') userId: string): UserPricingTier {
+[7m  [0m [91m                                                       ~~~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/pricing/pricing.controller.ts[0m:[93m4[0m:[93m23[0m
+    [7m4[0m import { PricingRule, UserPricingTier } from './interfaces/pricing.interface';
+    [7m [0m [96m                      ~~~~~~~~~~~~~~~[0m
+    'UserPricingTier' was imported here.
+[96msrc/modules/pricing/pricing.service.ts[0m:[93m19[0m:[93m39[0m - [91merror[0m[90m TS18048: [0m'dealer.creditLimitAmount' is possibly 'undefined'.
+
+[7m19[0m     if (dealer.creditLimitRequired && dealer.creditLimitAmount >= 1000000) {
+[7m  [0m [91m                                      ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/pricing/pricing.service.ts[0m:[93m21[0m:[93m46[0m - [91merror[0m[90m TS18048: [0m'dealer.creditLimitAmount' is possibly 'undefined'.
+
+[7m21[0m     } else if (dealer.creditLimitRequired && dealer.creditLimitAmount >= 500000) {
+[7m  [0m [91m                                             ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/returns/returns.service.ts[0m:[93m159[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ reason: ReturnReason; status: "pending" | "approved"; refundAmount: number; requestedAt: Date; approvedAt: Date | undefined; approvedBy: string | undefined; ... 17 more ...; returnNumber: string; }' is not assignable to type 'ReturnRequest'.
+  Types of property 'items' are incompatible.
+    Type 'ReturnItemDto[]' is not assignable to type 'ReturnItem[]'.
+      Property 'id' is missing in type 'ReturnItemDto' but required in type 'ReturnItem'.
+
+[7m159[0m     const returnRequest: ReturnRequest = {
+[7m   [0m [91m          ~~~~~~~~~~~~~[0m
+
+  [96msrc/modules/returns/interfaces/returns.interface.ts[0m:[93m40[0m:[93m3[0m
+    [7m40[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96msrc/modules/returns/returns.service.ts[0m:[93m345[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ status: "pending"; paymentStatus: "pending" | "paid" | "refunded"; requestedAt: Date; createdAt: Date; updatedAt: Date; returnRequestId: string; returnNumber: string; ... 10 more ...; exchangeNumber: string; }' is not assignable to type 'Exchange'.
+  Types of property 'returnedItems' are incompatible.
+    Type 'ExchangeItemDto[]' is not assignable to type 'ExchangeItem[]'.
+      Property 'id' is missing in type 'ExchangeItemDto' but required in type 'ExchangeItem'.
+
+[7m345[0m     const exchange: Exchange = {
+[7m   [0m [91m          ~~~~~~~~[0m
+
+  [96msrc/modules/returns/interfaces/returns.interface.ts[0m:[93m115[0m:[93m3[0m
+    [7m115[0m   id: string;
+    [7m   [0m [96m  ~~[0m
+    'id' is declared here.
+[96msrc/modules/security/guards/security.guard.ts[0m:[93m43[0m:[93m46[0m - [91merror[0m[90m TS2339: [0mProperty 'supabaseService' does not exist on type 'SecurityGuard'.
+
+[7m43[0m     const { data: user, error } = await this.supabaseService.getClient()
+[7m  [0m [91m                                             ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m87[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ApiParam'.
+
+[7m87[0m   @ApiParam({ name: 'resourceType', description: 'Type of resource (e.g., order, product)' })
+[7m  [0m [91m   ~~~~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m88[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ApiParam'.
+
+[7m88[0m   @ApiParam({ name: 'resourceId', description: 'ID of the resource' })
+[7m  [0m [91m   ~~~~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m89[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ApiParam'.
+
+[7m89[0m   @ApiParam({ name: 'action', description: 'Action to perform (e.g., read, update, delete)' })
+[7m  [0m [91m   ~~~~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m94[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m94[0m     @Param('resourceType') resourceType: string,
+[7m  [0m [91m     ~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m95[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m95[0m     @Param('resourceId') resourceId: string,
+[7m  [0m [91m     ~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m96[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Param'.
+
+[7m96[0m     @Param('action') action: string,
+[7m  [0m [91m     ~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m107[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'ForbiddenException'.
+
+[7m107[0m       throw new ForbiddenException('Access denied to this resource');
+[7m   [0m [91m                ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/security/security.controller.ts[0m:[93m145[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m145[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/shipping-logistics/shipping-logistics.controller.ts[0m:[93m75[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m75[0m     @Req() req
+[7m  [0m [91m           ~~~[0m
+[96msrc/modules/shipping-logistics/shipping-logistics.controller.ts[0m:[93m118[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m118[0m     @Req() req
+[7m   [0m [91m           ~~~[0m
+[96msrc/modules/supplier-management/dto/supplier.dto.ts[0m:[93m137[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'IsArray'.
+
+[7m137[0m   @IsArray()
+[7m   [0m [91m   ~~~~~~~[0m
+[96msrc/modules/user-management/user.controller.ts[0m:[93m89[0m:[93m12[0m - [91merror[0m[90m TS1016: [0mA required parameter cannot follow an optional parameter.
+
+[7m89[0m     @Req() req
+[7m  [0m [91m           ~~~[0m
+[96msrc/modules/user-management/user.service.ts[0m:[93m102[0m:[93m50[0m - [91merror[0m[90m TS2339: [0mProperty 'id' does not exist on type '{ role: any; }'.
+
+[7m102[0m     await this.logRoleChange(userId, currentUser.id, newRole);
+[7m   [0m [91m                                                 ~~[0m
+[96msrc/modules/user-management/user.service.ts[0m:[93m146[0m:[93m52[0m - [91merror[0m[90m TS2339: [0mProperty 'id' does not exist on type '{ role: any; }'.
+
+[7m146[0m     await this.logStatusChange(userId, currentUser.id, newStatus, reason);
+[7m   [0m [91m                                                   ~~[0m
+[96msrc/modules/zoho-integration/dto/sync-customer-to-zoho.dto.ts[0m:[93m8[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'IsOptional'.
+
+[7m8[0m   @IsOptional()
+[7m [0m [91m   ~~~~~~~~~~[0m
+[96msrc/modules/zoho-integration/zoho-integration.service.ts[0m:[93m679[0m:[93m22[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ entityId: any; entityType: any; success: boolean; message: any; }' is not assignable to parameter of type 'never'.
+
+[7m679[0m         results.push({
+[7m   [0m [91m                     ~[0m
+[7m680[0m           entityId: operation.entity_id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m683[0m           message: result.message
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m684[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/zoho-integration/zoho-integration.service.ts[0m:[93m686[0m:[93m22[0m - [91merror[0m[90m TS2345: [0mArgument of type '{ entityId: any; entityType: any; success: boolean; message: any; }' is not assignable to parameter of type 'never'.
+
+[7m686[0m         results.push({
+[7m   [0m [91m                     ~[0m
+[7m687[0m           entityId: operation.entity_id,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m690[0m           message: error.message
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m691[0m         });
+[7m   [0m [91m~~~~~~~~~[0m
+[96msrc/modules/zoho/interfaces/zoho.interface.ts[0m:[93m106[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'tax_id'.
+
+[7m106[0m   tax_id: string;
+[7m   [0m [91m  ~~~~~~[0m
+[96msrc/modules/zoho/interfaces/zoho.interface.ts[0m:[93m113[0m:[93m3[0m - [91merror[0m[90m TS2300: [0mDuplicate identifier 'tax_id'.
+
+[7m113[0m   tax_id: string;
+[7m   [0m [91m  ~~~~~~[0m
+[96msrc/modules/zoho/zoho.service.ts[0m:[93m54[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m54[0m         clientId: this.configService.get<string>('ZOHO_CLIENT_ID'),
+[7m  [0m [91m        ~~~~~~~~[0m
+[96msrc/modules/zoho/zoho.service.ts[0m:[93m55[0m:[93m9[0m - [91merror[0m[90m TS2322: [0mType 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m55[0m         clientSecret: this.configService.get<string>('ZOHO_CLIENT_SECRET'),
+[7m  [0m [91m        ~~~~~~~~~~~~[0m
+[96msrc/modules/zoho/zoho.service.ts[0m:[93m67[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'ZohoConnection | null' is not assignable to type 'ZohoConnection'.
+  Type 'null' is not assignable to type 'ZohoConnection'.
+
+[7m67[0m       return this.connection;
+[7m  [0m [91m      ~~~~~~[0m
+[96msrc/modules/zoho/zoho.service.ts[0m:[93m98[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'ZohoConnection | null' is not assignable to type 'ZohoConnection'.
+  Type 'null' is not assignable to type 'ZohoConnection'.
+
+[7m98[0m       return this.connection;
+[7m  [0m [91m      ~~~~~~[0m
+[96msrc/modules/payment-gateway/payment-gateway.controller.ts[0m:[93m117[0m:[93m9[0m - [91merror[0m[90m TS4053: [0mReturn type of public method from exported class has or is using name 'PaymentStatus' from external module "F:/code/headless/apps/api/src/modules/payment-gateway/dto/update-payment.dto" but cannot be named.
+
+[7m117[0m   async updatePayment(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+[7m   [0m [91m        ~~~~~~~~~~~~~[0m
+[96msrc/modules/payments/payment.service.ts[0m:[93m12[0m:[93m9[0m - [91merror[0m[90m TS4053: [0mReturn type of public method from exported class has or is using name 'PaymentMethod' from external module "F:/code/headless/apps/api/src/modules/payments/dto/create-payment.dto" but cannot be named.
+
+[7m12[0m   async initiatePayment(createPaymentDto: CreatePaymentDto, userId: string) {
+[7m  [0m [91m        ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/payments/payment.controller.ts[0m:[93m30[0m:[93m9[0m - [91merror[0m[90m TS4053: [0mReturn type of public method from exported class has or is using name 'PaymentMethod' from external module "F:/code/headless/apps/api/src/modules/payments/dto/create-payment.dto" but cannot be named.
+
+[7m30[0m   async initiatePayment(@Body() createPaymentDto: CreatePaymentDto, @Req() req) {
+[7m  [0m [91m        ~~~~~~~~~~~~~~~[0m
+
+Found 367 error(s).
+
+ ELIFECYCLE  Command failed with exit code 1.

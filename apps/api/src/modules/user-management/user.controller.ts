@@ -85,8 +85,8 @@ export class UserController {
   async updateStatus(
     @Param('id') userId: string,
     @Body('newStatus') newStatus: string,
-    @Body('reason') reason?: string,
-    @Req() req
+    @Req() req,
+    @Body('reason') reason?: string
   ) {
     return this.userService.updateUserStatus(userId, newStatus, req.user.id, reason);
   }

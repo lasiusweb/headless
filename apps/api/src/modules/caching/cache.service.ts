@@ -64,7 +64,7 @@ export class CacheService {
    */
   async clear(): Promise<void> {
     try {
-      await this.cacheManager.reset();
+      await this.cacheManager.clear();
       this.logger.log('Cache cleared');
     } catch (error) {
       this.logger.error(`Cache clear error: ${error.message}`);

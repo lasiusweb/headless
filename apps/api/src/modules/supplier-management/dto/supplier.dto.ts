@@ -1,4 +1,4 @@
-import { IsString, IsUUID, IsOptional, IsEnum, IsNumber, IsEmail, Min, IsObject } from 'class-validator';
+import { IsString, IsUUID, IsOptional, IsEnum, IsNumber, IsEmail, Min, IsObject, IsArray } from 'class-validator';
 
 enum SupplierType {
   Manufacturer = 'manufacturer',

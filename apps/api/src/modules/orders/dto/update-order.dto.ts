@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsEnum } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsEnum, IsDate } from 'class-validator';
 
 export class UpdateOrderDto {
   @IsString()
@@ -16,4 +16,16 @@ export class UpdateOrderDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
+  approvedBy?: string;
+
+  @IsString()
+  @IsOptional()
+  rejectedBy?: string;
+
+  @IsDate()
+  @IsOptional()
+  shippedAt?: Date;
 }

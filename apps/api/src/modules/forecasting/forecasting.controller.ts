@@ -1,9 +1,10 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
   Query,
+  Param,
   UseGuards,
   HttpStatus,
   HttpCode
@@ -11,7 +12,7 @@ import {
 import { ForecastingService } from './forecasting.service';
 import { DemandForecastDto } from './dto/demand-forecast.dto';
 import { InventoryRecommendationDto } from './dto/inventory-recommendation.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';

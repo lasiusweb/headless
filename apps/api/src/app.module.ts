@@ -7,6 +7,7 @@ import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
+import { HealthModule } from './modules/health/health.module';
 import { ProductModule } from './modules/products/product.module';
 import { CategoryModule } from './modules/categories/category.module';
 import { SegmentModule } from './modules/segments/segment.module';
@@ -48,6 +49,7 @@ import { SecurityModule } from './modules/security/security.module';
       isGlobal: true,
     }),
     SupabaseModule,
+    HealthModule,
     AuthModule,
     ProductModule,
     CategoryModule,

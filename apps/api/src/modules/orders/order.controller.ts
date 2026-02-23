@@ -99,8 +99,8 @@ export class OrderController {
   async submitApproval(
     @Param('id') orderId: string,
     @Body('approved') approved: boolean,
-    @Body('notes') notes?: string,
-    @Req() req
+    @Req() req,
+    @Body('notes') notes?: string
   ) {
     return this.orderService.submitApproval(orderId, req.user.id, req.user.role, approved, notes);
   }

@@ -2,4 +2,3 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'apps/web/apps/*'
-  - 'apps/web/packages/*'

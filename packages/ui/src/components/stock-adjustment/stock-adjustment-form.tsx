@@ -148,9 +148,8 @@ const StockAdjustmentForm = React.forwardRef<
               
               <div className="space-y-2">
                 <Label htmlFor="adjustment-type">Adjustment Type</Label>
-                <Select 
-                  value={formData.adjustmentType} 
-                  onValueChange={(value: 'addition' | 'reduction' | 'damage' | 'theft' | 'transfer')} 
+                <Select
+                  value={formData.adjustmentType}
                   onValueChange={(value) => handleChange('adjustmentType', value)}
                 >
                   <SelectTrigger id="adjustment-type">
