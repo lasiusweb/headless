@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
@@ -13,7 +13,7 @@ import { CategoryModule } from './modules/categories/category.module';
 import { SegmentModule } from './modules/segments/segment.module';
 import { CropModule } from './modules/crops/crop.module';
 import { ProblemModule } from './modules/problems/problem.module';
-import { ProductVariantModule } from './modules/product-variants/product-variant.module';
+import { ProductVariantModule } from './modules/product-variants/product-variants.module';
 import { CartModule } from './modules/cart/cart.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { AddressModule } from './modules/addresses/address.module';
@@ -42,6 +42,9 @@ import { LoggingModule } from './modules/logging/logging.module';
 import { PosModule } from './modules/pos/pos.module';
 import { ReturnsModule } from './modules/returns/returns.module';
 import { SecurityModule } from './modules/security/security.module';
+import { SentryModule } from './modules/sentry/sentry.module';
+import { SentryInterceptor } from './modules/sentry/sentry.interceptor';
+import { SentryFilter } from './modules/sentry/sentry.filter';
 
 @Module({
   imports: [
@@ -85,6 +88,7 @@ import { SecurityModule } from './modules/security/security.module';
     LoggingModule,
     ReturnsModule,
     SecurityModule,
+    SentryModule,
   ],
   controllers: [AppController],
   providers: [
@@ -96,6 +100,14 @@ import { SecurityModule } from './modules/security/security.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SentryInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: SentryFilter,
     },
   ],
 })

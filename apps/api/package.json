@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.6",
     "@sentry/node": "^9.5.0",
+    "@sentry/profiling-node": "^9.5.0",
     "@supabase/supabase-js": "^2.95.3",
     "axios": "^1.8.3",
     "cache-manager": "^6.4.1",
